@@ -1,0 +1,1693 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>نظام إدارة عمارة الحجاز</title>
+<style>
+  :root{
+    --bg:#ffffff; --text:#37352f; --muted:#787774; --border:#e9e9e7; --border-strong:#d3d1cb;
+    --hover:#f7f7f5; --chip:#f1f1ef; --owe:#a8332a; --radius:6px;
+    --accent:#0F4C5C; --accent2:#1B3A57; --gold:#C9A227; --ok:#2f7a2f;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Kufi Arabic","Noto Sans Arabic",Tahoma,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+  body{font-family:var(--sans);color:var(--text);background:var(--bg);font-size:14px;line-height:1.5;}
+  .wrap{max-width:min(1700px,96vw);margin:0 auto;padding:0 22px;}
+  header{border-top:3px solid var(--gold);border-bottom:1px solid var(--border);position:sticky;top:0;background:linear-gradient(180deg,#fbfbfa,var(--bg));z-index:20;}
+  .head{padding:18px 0 0;}
+  .head h1{font-size:23px;margin:0;font-weight:800;letter-spacing:-.01em;color:var(--accent);}
+  .head .sub{color:var(--muted);font-size:13px;margin-top:3px;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+  nav{display:flex;gap:2px;margin-top:16px;flex-wrap:wrap;}
+  nav button{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);
+    padding:8px 10px;cursor:pointer;font-size:13.5px;font-family:var(--sans);font-weight:500;}
+  nav button:hover{color:var(--text);background:var(--hover);}
+  nav button.active{color:var(--accent);border-bottom-color:var(--gold);font-weight:700;}
+  .navGroup{position:relative;}
+  .navMenu{position:absolute;top:100%;right:0;background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--radius);box-shadow:0 8px 28px rgba(0,0,0,.12);padding:6px;min-width:175px;display:none;z-index:40;flex-direction:column;gap:2px;}
+  .navGroup:hover .navMenu{display:flex;}
+  .navMenu button{display:block;width:100%;text-align:right;border:none;border-bottom:none;background:transparent;padding:7px 10px;border-radius:4px;color:var(--text);font-size:13px;font-weight:500;}
+  .navMenu button:hover{background:var(--hover);}
+  .navMenu button.active{color:var(--accent);background:var(--hover);font-weight:700;border-bottom:none;}
+  .navGroup>button.gbtn::after{content:" \25be";font-size:10px;color:var(--muted);}
+  .navGroup.hasActive>button.gbtn{color:var(--accent);border-bottom-color:var(--gold);font-weight:700;}
+  .plink{cursor:pointer;color:var(--accent);font-weight:600;} .plink:hover{text-decoration:underline;}
+  main{padding:24px 0 80px;}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start;}
+  .grid.wide{grid-template-columns:minmax(0,420px) minmax(0,1fr);}
+  @media (max-width:900px){.grid,.grid.wide{grid-template-columns:1fr;}}
+  .card{border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+  .card h3{font-size:13px;margin:0 0 8px;font-weight:600;}
+  .sectionTitle{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 12px;font-weight:600;}
+  label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px;}
+  input,select,textarea{width:100%;padding:7px 9px;border:1px solid var(--border-strong);border-radius:var(--radius);
+    font-family:var(--sans);font-size:13.5px;background:var(--bg);color:var(--text);outline:none;}
+  input:focus,select:focus,textarea:focus{border-color:#9b9a96;}
+  textarea{min-height:60px;resize:vertical;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;} .row>*{flex:1;min-width:130px;}
+  .btn{border:1px solid var(--border-strong);background:var(--bg);color:var(--text);padding:7px 13px;
+    border-radius:var(--radius);cursor:pointer;font-size:13px;font-weight:500;font-family:var(--sans);}
+  .btn:hover{background:var(--hover);}
+  .btn.solid{background:var(--accent);color:#fff;border-color:var(--accent);} .btn.solid:hover{opacity:.9;}
+  .btn.sm{padding:4px 9px;font-size:12px;}
+  .btn.link{border:none;background:transparent;color:var(--muted);padding:4px 6px;} .btn.link:hover{color:var(--owe);}
+  .btnRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:right;padding:8px 8px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+  th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;}
+  tr:hover td{background:var(--hover);}
+  .tableWrap{overflow:auto;border:1px solid var(--border);border-radius:var(--radius);}
+  table.bare th,table.bare td{padding:7px 6px;}
+  .chip{display:inline-block;background:var(--chip);border-radius:4px;padding:1px 7px;font-size:12px;white-space:nowrap;}
+  .mono{font-family:var(--mono);font-size:11.5px;color:var(--muted);}
+  .muted{color:var(--muted);} .owe{color:var(--owe);font-weight:600;} .num{font-variant-numeric:tabular-nums;}
+  .right{text-align:left;} hr{border:none;border-top:1px solid var(--border);margin:14px 0;}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr);}}
+  .kpi{border:1px solid var(--border);border-radius:var(--radius);padding:12px;border-right:3px solid var(--gold);background:linear-gradient(180deg,#fbfbfa,var(--bg));}
+  .kpi .t{color:var(--muted);font-size:12px;} .kpi .v{font-size:20px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums;color:var(--accent);}
+  .empty{color:var(--muted);padding:14px;text-align:center;font-size:13px;}
+  .receipt{max-width:520px;margin:0 auto;}
+  .receipt .rhead{text-align:center;padding-bottom:12px;border-bottom:1px solid var(--text);margin-bottom:14px;}
+  .receipt .rhead .b{font-size:18px;font-weight:700;}
+  .receipt .rmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px;}
+  .receipt table td{border-bottom:1px dotted var(--border);}
+  .receipt .wtab{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;}
+  .receipt .wtab th,.receipt .wtab td{border:1px solid var(--border);padding:4px 6px;text-align:center;}
+  .sign{display:flex;gap:30px;margin-top:26px;} .sign>div{flex:1;} .sign .line{height:34px;border-bottom:1px solid var(--border-strong);}
+  .modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:60;}
+  .modalBox{background:#fff;border-radius:8px;padding:20px;width:min(420px,92vw);box-shadow:0 12px 48px rgba(0,0,0,.25);}
+  iframe.billsFrame{width:100%;height:75vh;border:1px solid var(--border);border-radius:var(--radius);background:#d4dde4;}
+  @media print{ header,.noprint{display:none !important;} main{padding:0;} .card{border:none;padding:0;} tr:hover td{background:transparent;} }
+</style>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script>
+/* ===== PATCH v6 — تحسينات نظام إدارة المبنى (كشف الحساب/التصنيفات/السندات/الإعفاء/كشف الحسابات) ===== */
+(function(){
+  function init(){
+    if(window.__hgPatchV6){ return; }
+    if(typeof db==="undefined"||typeof save!=="function"||typeof refresh!=="function"){ return; }
+    window.__hgPatchV6=true;
+    try{ if(!db.__fixAlaa265){ var _al=(db.people||[]).filter(function(p){return p.name==="علاء الخطيب";})[0]; if(_al){ _al.oldDebt=265; } db.__fixAlaa265=true; save(db); } }catch(e){console.error(e);}
+
+    /* تصنيفات المياه */
+    if(!Array.isArray(db.waterCategories)){
+      var defs=["مولد","مولد البابا","مولد الخدمة العامة","ابو يوسف نصر","مياه العمارة"];
+      var froms=(db.periods||[]).map(function(p){return p.source;}).filter(Boolean);
+      var set=[]; defs.concat(froms).forEach(function(c){ if(c && set.indexOf(c)<0) set.push(c); });
+      db.waterCategories=set; save(db);
+    }
+
+    window.readingDue=function(r){ return (r&&r.exempt)?0:readingTotal(r); };
+
+    /* منطق المديونية مع مراعاة الإعفاء */
+    window.personDue=function(pid,per){return db.readings.filter(function(r){return r.personId===pid&&(!per||r.periodId===per);}).reduce(function(s,r){return s+readingDue(r);},0);};
+    window.personOutstanding=function(pid){ var rem=(personDue(pid)+personServicesDue(pid)+(typeof personOldDebt==="function"?personOldDebt(pid):0))-personPaid(pid); return rem>0?rem:0; };
+    window.personPaidWater=function(pid){return db.readings.filter(function(r){return r.personId===pid&&periodIsPaid(r.periodId);}).reduce(function(s,r){return s+readingDue(r);},0);};
+
+    window.toggleExempt=function(id){var r=byId(db.readings,id); if(!r)return; r.exempt=!r.exempt; save(db); refresh();};
+    var _hgPay=null;
+    window.hgPayOpen=function(pid,cat,suggest){ _hgPay={pid:pid,cat:cat}; var m=document.getElementById("hgPayModal"); if(!m)return; var p=byId(db.people,pid); var ti=document.getElementById("hgPayTitle"); if(ti)ti.textContent=cat; var inf=document.getElementById("hgPayInfo"); if(inf)inf.textContent=(p?p.name:"")+" — "+cat; var am=document.getElementById("hgPayAmount"); if(am)am.value=(suggest&&suggest>0)?suggest:""; var dt=document.getElementById("hgPayDate"); if(dt)dt.value=today(); var sel=document.getElementById("hgPayAccount"); if(sel)sel.innerHTML=db.accounts.map(function(a){return '<option value="'+a.id+'">'+esc(a.name)+'</option>';}).join(""); var nt=document.getElementById("hgPayNote"); if(nt)nt.value=""; m.style.display="flex"; };
+    window.hgPayClose=function(){ var m=document.getElementById("hgPayModal"); if(m)m.style.display="none"; _hgPay=null; };
+    window.hgPaySave=function(){ if(!_hgPay)return; var amt=Number((document.getElementById("hgPayAmount")||{}).value||0); if(!amt){alert("أدخل المبلغ");return;} var acc=(document.getElementById("hgPayAccount")||{}).value||null; var date=(document.getElementById("hgPayDate")||{}).value||today(); var note=(document.getElementById("hgPayNote")||{}).value||""; if(_hgPay.editId){ var x=byId(db.incomes,_hgPay.editId); if(x){ x.amount=amt; x.date=date; x.accountId=acc; x.note=note; x.category=_hgPay.cat; } } else { db.incomes.push({id:uid("IN"),date:date,personId:_hgPay.pid,accountId:acc,amount:amt,category:_hgPay.cat,note:note,createdAt:NOW()}); } save(db); hgPayClose(); refresh(); };
+    window.hgPayEdit=function(id){ var x=byId(db.incomes,id); if(!x)return; _hgPay={pid:x.personId,cat:x.category,editId:id}; var m=document.getElementById("hgPayModal"); if(!m)return; var p=x.personId?byId(db.people,x.personId):null; var ti=document.getElementById("hgPayTitle"); if(ti)ti.textContent="تعديل دفعة — "+(x.category||""); var inf=document.getElementById("hgPayInfo"); if(inf)inf.textContent=(p?p.name:"")+" — "+(x.category||""); var am=document.getElementById("hgPayAmount"); if(am)am.value=x.amount||""; var dt=document.getElementById("hgPayDate"); if(dt)dt.value=x.date||today(); var sel=document.getElementById("hgPayAccount"); if(sel){ sel.innerHTML=db.accounts.map(function(a){return '<option value="'+a.id+'">'+esc(a.name)+'</option>';}).join(""); if(x.accountId)sel.value=x.accountId; } var nt=document.getElementById("hgPayNote"); if(nt)nt.value=x.note||""; m.style.display="flex"; };
+    window.hgDelIncome=function(id){ if(!confirm("حذف هذه الدفعة؟"))return; db.incomes=db.incomes.filter(function(x){return x.id!==id;}); save(db); refresh(); };
+    window.hgDelReading=function(id){ if(!confirm("حذف هذه القراءة؟"))return; db.readings=db.readings.filter(function(r){return r.id!==id;}); save(db); refresh(); };
+    window.hgDelService=function(id){ if(!confirm("سيُحذف هذا البند لكل السكان. متابعة؟"))return; db.services=(db.services||[]).filter(function(s){return s.id!==id;}); if(db.svcExempt){ Object.keys(db.svcExempt).forEach(function(k){ if(k.split("|")[1]===id) delete db.svcExempt[k]; }); } save(db); refresh(); };
+    var _hgRd=null;
+    window.hgRdEdit=function(id){ var r=byId(db.readings,id); if(!r)return; _hgRd=id; var m=document.getElementById("hgRdModal"); if(!m)return; var p=byId(db.people,r.personId), per=byId(db.periods,r.periodId); var inf=document.getElementById("hgRdInfo"); if(inf)inf.textContent=(p?p.name:"")+" — "+(per?per.name:""); var pv=document.getElementById("hgRdPrev"); if(pv)pv.value=r.prev; var cv=document.getElementById("hgRdCurr"); if(cv)cv.value=r.curr; var pr=document.getElementById("hgRdPrice"); if(pr)pr.value=r.price; var dt=document.getElementById("hgRdDate"); if(dt)dt.value=r.date||today(); m.style.display="flex"; };
+    window.hgRdClose=function(){ var m=document.getElementById("hgRdModal"); if(m)m.style.display="none"; _hgRd=null; };
+    window.hgRdSave=function(){ if(!_hgRd)return; var r=byId(db.readings,_hgRd); if(r){ r.prev=Number((document.getElementById("hgRdPrev")||{}).value||0); r.curr=Number((document.getElementById("hgRdCurr")||{}).value||0); r.price=Number((document.getElementById("hgRdPrice")||{}).value||0); r.date=(document.getElementById("hgRdDate")||{}).value||r.date; } save(db); hgRdClose(); refresh(); };
+    if(!db.svcExempt) db.svcExempt={};
+    (function(){ var dirty=false; (db.services||[]).forEach(function(sv){ if(!sv.id){ sv.id=uid("SV"); dirty=true; } }); db.people.forEach(function(p){ if(p.exemptServices){ (db.services||[]).forEach(function(sv){ db.svcExempt[p.id+"|"+sv.id]=true; }); delete p.exemptServices; dirty=true; } }); if(dirty) save(db); })();
+    window.isSvcExempt=function(pid,svid){ return !!(db.svcExempt&&db.svcExempt[pid+"|"+svid]); };
+    window.toggleSvcExempt=function(pid,svid){ if(!db.svcExempt)db.svcExempt={}; var k=pid+"|"+svid; if(db.svcExempt[k])delete db.svcExempt[k]; else db.svcExempt[k]=true; save(db); refresh(); };
+    window.personServicesDue=function(pid){ return (db.services||[]).reduce(function(s,sv){ return s+(isSvcExempt(pid,sv.id)?0:Number(sv.amount||0)); },0); };
+    window.servicesDue=function(pid){ return personServicesDue(pid); };
+    window.renderDebts=function(){ var tb=document.getElementById("debtsTbody"); if(!tb)return; var sel=document.getElementById("debtPeriod"); if(sel){ var cur=sel.value; sel.innerHTML='<option value="">كل الفترات</option>'+db.periods.map(function(p){return '<option value="'+p.id+'">'+esc(p.name)+'</option>';}).join(""); if(cur&&db.periods.some(function(p){return p.id===cur;}))sel.value=cur; } var f=(sel&&sel.value)||""; var tm3=0,tw=0,ts=0,tod=0,td=0,tp=0,tr=0; tb.innerHTML=db.people.map(function(p){ var rs=db.readings.filter(function(r){return r.personId===p.id&&(!f||r.periodId===f);}); var m3=rs.reduce(function(s,r){return s+consumption(r);},0); var waterDue=rs.reduce(function(s,r){return s+readingDue(r);},0); var svcDue=personServicesDue(p.id); var old=(typeof personOldDebt==="function"?personOldDebt(p.id):0); var due=waterDue+svcDue+old; var paid=personPaid(p.id); var rem=due-paid; tm3+=m3;tw+=waterDue;ts+=svcDue;tod+=old;td+=due;tp+=paid;tr+=(rem>0?rem:0); return '<tr><td>'+esc(p.name)+'</td><td class="num">'+fmt3(m3)+'</td><td class="num">'+fmt(waterDue)+'</td><td class="num">'+fmt(svcDue)+'</td><td class="num">'+fmt(old)+'</td><td class="num">'+fmt(due)+'</td><td class="num">'+fmt(paid)+'</td><td class="num'+(rem>0.001?' owe':'')+'">'+fmt(rem>0?rem:0)+'</td></tr>'; }).join("")||'<tr><td colspan="8" class="empty">لا يوجد سكان</td></tr>'; var tf=document.getElementById("debtsTfoot"); if(tf) tf.innerHTML='<tr><th>الإجمالي</th><th class="num">'+fmt3(tm3)+'</th><th class="num">'+fmt(tw)+'</th><th class="num">'+fmt(ts)+'</th><th class="num">'+fmt(tod)+'</th><th class="num">'+fmt(td)+'</th><th class="num">'+fmt(tp)+'</th><th class="num">'+fmt(tr)+'</th></tr>'; };
+    window.toggleServiceExempt=function(pid){ if(!db.svcExempt)db.svcExempt={}; var allEx=(db.services||[]).length>0&&(db.services||[]).every(function(sv){return isSvcExempt(pid,sv.id);}); (db.services||[]).forEach(function(sv){ var k=pid+"|"+sv.id; if(allEx)delete db.svcExempt[k]; else db.svcExempt[k]=true; }); save(db); refresh(); };
+    window.renderSvcExempt=function(){
+      var tb=document.getElementById("svcExemptTable"); if(!tb)return;
+      var svcs=(db.services||[]).slice().sort(function(a,b){return (a.date||"").localeCompare(b.date||"");});
+      if(!svcs.length){ tb.innerHTML='<thead><tr><th>الساكن</th></tr></thead><tbody><tr><td class="empty">لا توجد بنود خدمات بعد — أضِف خدمة من الأعلى</td></tr></tbody>'; return; }
+      var head='<thead><tr><th>الساكن</th>'+svcs.map(function(s){return '<th class="num">'+esc((s.label||"خدمة")+' ('+fmt(s.amount)+')')+'<div class="muted" style="font-weight:400;font-size:10px">'+esc(s.date||"")+'</div></th>';}).join("")+'<th class="num">إجمالي المستحق</th></tr></thead>';
+      var body=db.people.map(function(p){
+        var cells=svcs.map(function(s){var ex=isSvcExempt(p.id,s.id);return '<td class="num"><button class="btn sm'+(ex?'':' solid')+'" onclick="toggleSvcExempt(\''+p.id+'\',\''+s.id+'\')">'+(ex?'معفى':fmt(s.amount))+'</button></td>';}).join("");
+        return '<tr><td>'+esc(p.name)+'</td>'+cells+'<td class="num">'+fmt(personServicesDue(p.id))+'</td></tr>';
+      }).join("");
+      tb.innerHTML=head+'<tbody>'+body+'</tbody>';
+    };
+
+    window.addWaterCategory=function(){var el=document.getElementById("wcNew"); if(!el)return; var v=(el.value||"").trim(); if(!v)return; if((db.waterCategories||[]).indexOf(v)<0){db.waterCategories.push(v); save(db);} el.value=""; refresh();};
+    window.delWaterCategory=function(c){ if(!confirm("حذف التصنيف؟"))return; db.waterCategories=(db.waterCategories||[]).filter(function(x){return x!==c;}); save(db); refresh();};
+
+    /* القراءات (إعفاء + تصنيف) */
+    window.addReading=function(){
+      var pid=rdPerson.value, perid=rdPeriod.value;
+      if(!pid)return alert("اختر الساكن");
+      if(!perid)return alert("اختر الفترة");
+      var catEl=document.getElementById("rdCategory"); var cat=catEl?catEl.value:"";
+      if(!cat){ var per=byId(db.periods,perid); cat=per?(per.source||""):""; }
+      db.readings.push({id:uid("RD"),personId:pid,periodId:perid,prev:Number(rdPrev.value||0),curr:Number(rdCurr.value||0),price:Number(rdPrice.value||0),date:rdDate.value||today(),category:cat,createdAt:NOW()});
+      save(db); rdPrev.value="";rdCurr.value="";rdPrice.value=""; refresh();
+    };
+    window.renderReadings=function(){
+      var tb=document.getElementById("readingsTbody"); if(!tb)return;
+      var f=(document.getElementById("rdFilterPeriod")||{}).value||"";
+      var list=db.readings.slice(); if(f)list=list.filter(function(r){return r.periodId===f;});
+      list.sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
+      tb.innerHTML=list.map(function(r){
+        var nm=(byId(db.people,r.personId)||{}).name||"—";
+        var pn=(byId(db.periods,r.periodId)||{}).name||"—";
+        var ex=!!r.exempt;
+        return '<tr'+(ex?' style="opacity:.55"':'')+'><td>'+esc(nm)+(r.category?' <span class="chip">'+esc(r.category)+'</span>':'')+'</td>'
+          +'<td class="muted">'+esc(pn)+'</td><td class="num">'+fmtN0(r.prev)+'</td><td class="num">'+fmtN0(r.curr)+'</td>'
+          +'<td class="num">'+fmt3(consumption(r))+'</td><td class="num">'+fmt(r.price)+'</td>'
+          +'<td class="num">'+(ex?'<span class="chip">معفى</span>':fmt(readingTotal(r)))+'</td>'
+          +'<td class="noprint right"><button class="btn sm" onclick="payFor(\''+r.id+'\')">قبض</button> '
+          +'<button class="btn sm" onclick="toggleExempt(\''+r.id+'\')">'+(ex?'إلغاء الإعفاء':'إعفاء')+'</button> '
+          +'<button class="btn link" onclick="delReading(\''+r.id+'\')">حذف</button></td></tr>';
+      }).join("")||'<tr><td colspan="8" class="empty">لا يوجد قراءات</td></tr>';
+    };
+
+    /* كشف الحساب: من فترة ← إلى فترة */
+    window.renderStatement=function(){
+      var area=document.getElementById("statementArea"); if(!area)return;
+      var pf=document.getElementById("stPeriodFrom"), pt=document.getElementById("stPeriodTo");
+      var pers=db.periods.slice().sort(function(a,b){return (a.start||"").localeCompare(b.start||"");});
+      function fillP(sel){ if(!sel)return; var cur=sel.value; sel.innerHTML=pers.map(function(p){return '<option value="'+p.id+'">'+esc(p.name)+'</option>';}).join(""); if(cur&&pers.some(function(p){return p.id===cur;})) sel.value=cur; }
+      fillP(pf); fillP(pt);
+      if(pf&&!pf.value&&pers.length) pf.value=pers[0].id;
+      if(pt&&!pt.value&&pers.length) pt.value=pers[pers.length-1].id;
+      var pid=(document.getElementById("stPerson")||{}).value||"";
+      if(!pid){ area.innerHTML='<div class="empty">اختر الساكن لعرض كشف الحساب</div>'; return; }
+      var person=byId(db.people,pid);
+      var fromP=pf?byId(db.periods,pf.value):null, toP=pt?byId(db.periods,pt.value):null;
+      var lo=fromP?(fromP.start||""):"", hi=toP?(toP.start||""):"";
+      if(lo&&hi&&lo>hi){ var t=lo; lo=hi; hi=t; }
+      var inRange=db.readings.filter(function(r){ if(r.personId!==pid)return false; var p=byId(db.periods,r.periodId); var s=p?(p.start||""):""; return (!lo||s>=lo)&&(!hi||s<=hi); });
+      inRange.sort(function(a,b){ var pa=byId(db.periods,a.periodId),pb=byId(db.periods,b.periodId); return ((pa?pa.start:"")||"").localeCompare((pb?pb.start:"")||""); });
+      var waterDueRange=inRange.reduce(function(s,r){return s+readingDue(r);},0);
+      var waterDueAll=personDue(pid);
+      var svcDue=personServicesDue(pid), oldDebt=personOldDebt(pid);
+      var totalDue=waterDueAll+svcDue+oldDebt;
+      var totalPaid=personPaid(pid);
+      var bal=totalDue-totalPaid;
+      var rowsHtml=inRange.map(function(r){
+        var p=byId(db.periods,r.periodId); var ex=!!r.exempt;
+        var tag=r.category?r.category:(p&&p.source?p.source:"");
+        return '<tr'+(ex?' style="opacity:.55"':'')+'><td>'+esc(p?p.name:"—")+(tag?' <span class="chip">'+esc(tag)+'</span>':'')+'</td>'
+          +'<td class="muted">'+esc(r.date||"")+'</td><td class="num">'+fmt3(consumption(r))+'</td>'
+          +'<td class="num">'+fmt(r.price)+'</td><td class="num">'+(ex?'<span class="chip">معفى</span>':fmt(readingTotal(r)))+'</td><td class="noprint right"><button class="btn sm" onclick="hgRdEdit(\''+r.id+'\')">تعديل</button> <button class="btn sm" onclick="toggleExempt(\''+r.id+'\')">'+(ex?'إلغاء الإعفاء':'إعفاء')+'</button> <button class="btn link" onclick="hgDelReading(\''+r.id+'\')">حذف</button></td></tr>';
+      }).join("")||'<tr><td colspan="6" class="empty">لا توجد قراءات ضمن النطاق</td></tr>';
+      var pays=db.incomes.filter(function(x){return x.personId===pid;}).sort(function(a,b){return (a.date||"").localeCompare(b.date||"");});
+      var paysHtml=pays.map(function(x){return '<tr><td class="muted">'+esc(x.date||"")+'</td><td><span class="chip">'+esc(x.category||"")+'</span></td><td>'+esc(x.note||"")+'</td><td class="num">'+fmt(x.amount)+'</td><td class="noprint right"><button class="btn sm" onclick="hgPayEdit(\''+x.id+'\')">تعديل</button> <button class="btn link" onclick="hgDelIncome(\''+x.id+'\')">حذف</button></td></tr>';}).join("")||'<tr><td colspan="5" class="empty">لا توجد دفعات</td></tr>';
+      var stSvcHtml=(db.services||[]).slice().sort(function(a,b){return (a.date||"").localeCompare(b.date||"");}).map(function(sv){var ex=isSvcExempt(pid,sv.id);return '<tr'+(ex?' style="opacity:.55"':'')+'><td>'+esc(sv.label||"")+'</td><td class="muted">'+esc(sv.date||"")+'</td><td class="num">'+(ex?'<span class="chip">معفى</span>':fmt(sv.amount))+'</td><td class="noprint right"><button class="btn sm" onclick="toggleSvcExempt(\''+pid+'\',\''+sv.id+'\')">'+(ex?'إلغاء الإعفاء':'إعفاء')+'</button> <button class="btn sm" onclick="setTab(\'services\')">تعديل</button> <button class="btn link" onclick="hgDelService(\''+sv.id+'\')">حذف</button></td></tr>';}).join("")||'<tr><td colspan="4" class="empty">لا توجد خدمات</td></tr>';
+      area.innerHTML=''
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--accent);padding-bottom:8px;margin-bottom:12px">'
+        +'<div><div style="font-size:18px;font-weight:800;color:var(--accent)">كشف حساب — '+esc(person?person.name:"")+'</div>'
+        +'<div class="muted" style="font-size:12px">النطاق: '+esc(fromP?fromP.name:"—")+' ← '+esc(toP?toP.name:"—")+'</div></div>'
+        +'<div class="muted" style="font-size:12px">تاريخ الإصدار: '+fmtDMY(today())+'</div></div>'
+        +'<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px"><button class="btn sm solid" onclick="hgPayOpen(\''+pid+'\',\'تحصيلات ماء\','+(waterDueAll>0?waterDueAll:0)+')">+ دفع مياه</button><button class="btn sm solid" onclick="hgPayOpen(\''+pid+'\',\'خدمات\','+(svcDue>0?svcDue:0)+')">+ دفع خدمات</button><button class="btn sm" onclick="hgPayOpen(\''+pid+'\',\'تسديد ديون سابق\','+(oldDebt>0?oldDebt:0)+')">+ تسديد دين سابق</button></div>'
+        +'<div class="sectionTitle">استهلاك المياه ضمن النطاق</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>الفترة / التعبئة</th><th>التاريخ</th><th class="num">م³</th><th class="num">السعر</th><th class="num">المستحق</th><th class="noprint"></th></tr></thead><tbody>'+rowsHtml
+        +'</tbody><tfoot><tr><th colspan="4">إجمالي مستحق المياه ضمن النطاق</th><th class="num">'+fmt(waterDueRange)+'</th><th class="noprint"></th></tr></tfoot></table></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">خدمات العمارة</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>البيان</th><th>التاريخ</th><th class="num">المبلغ</th><th class="noprint"></th></tr></thead><tbody>'+stSvcHtml+'</tbody><tfoot><tr><th colspan="2">مستحق الخدمات (بعد الإعفاء)</th><th class="num">'+fmt(svcDue)+'</th><th class="noprint"></th></tr></tfoot></table></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">الدفعات</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>التاريخ</th><th>التصنيف</th><th>البيان</th><th class="num">المبلغ</th><th class="noprint"></th></tr></thead><tbody>'+paysHtml+'</tbody></table></div>'
+        +'<div class="kpis" style="margin-top:16px">'
+        +'<div class="kpi"><div class="t">مستحق المياه (الكل)</div><div class="v">'+fmt(waterDueAll)+'</div></div>'
+        +'<div class="kpi"><div class="t">مستحق الخدمات</div><div class="v">'+fmt(svcDue)+'</div></div>'
+        +'<div class="kpi"><div class="t">دين قديم</div><div class="v">'+fmt(oldDebt)+'</div></div>'
+        +'<div class="kpi"><div class="t">إجمالي المدفوع</div><div class="v">'+fmt(totalPaid)+'</div></div></div>'
+        +'<div style="margin-top:12px;font-size:16px;font-weight:800;'+(bal>0.001?'color:var(--owe)':'color:var(--ok)')+'">الرصيد المتبقي: '+fmt(bal>0?bal:0)+' ₪'+(bal<=0?' (مسدّد)':'')+'</div>';
+    };
+
+    /* سند القبض (بيان السند فقط) */
+    function relWaterReading(pid){ var rs=db.readings.filter(function(r){return r.personId===pid;}); rs.sort(function(a,b){return (b.date||"").localeCompare(a.date||"");}); return rs[0]||null; }
+    function buildReceiptHTML(inc){
+      if(!inc) return '<div class="empty">اختر عملية قبض</div>';
+      var building=(document.getElementById("rcBuilding")||{}).value||"عمارة الحجاز";
+      var extra=(document.getElementById("rcExtra")||{}).value||"";
+      var person=inc.personId?byId(db.people,inc.personId):null;
+      var lines='';
+      if(inc.category==="تحصيلات ماء"){
+        var rd=relWaterReading(inc.personId); var per=rd?byId(db.periods,rd.periodId):null;
+        lines+='<tr><td>التعبئة</td><td>'+esc(per?per.name:(inc.note||"—"))+'</td></tr>';
+        lines+='<tr><td>مبلغ الفاتورة</td><td>'+(rd?fmt(readingTotal(rd)):"—")+' ₪</td></tr>';
+      } else if(inc.category==="خدمات"){
+        var sv=(db.services||[]).slice().sort(function(a,b){return (b.date||"").localeCompare(a.date||"");})[0];
+        lines+='<tr><td>البند</td><td>خدمات العمارة'+(sv?(' — '+esc(sv.label)):'')+'</td></tr>';
+        lines+='<tr><td>مبلغ الفاتورة</td><td>'+(sv?fmt(sv.amount):"—")+' ₪</td></tr>';
+      }
+      return ''
+        +'<div class="rhead"><div class="b">'+esc(building)+'</div><div>سند قبض</div></div>'
+        +'<div class="rmeta"><span>رقم السند: '+esc(inc.id)+'</span><span>التاريخ: '+fmtDMY(inc.date)+'</span></div>'
+        +'<table style="width:100%"><tbody>'
+        +'<tr><td>استلمنا من</td><td>'+esc(person?person.name:(inc.note||"—"))+'</td></tr>'
+        +'<tr><td>وذلك عن</td><td>'+esc(inc.category||"")+'</td></tr>'
+        +lines
+        +(inc.note?('<tr><td>بيان السند</td><td>'+esc(inc.note)+'</td></tr>'):'')
+        +(extra?('<tr><td>بيان إضافي</td><td>'+esc(extra)+'</td></tr>'):'')
+        +'<tr><td>المبلغ المقبوض</td><td style="font-weight:800;font-size:16px">'+fmt(inc.amount)+' ₪</td></tr>'
+        +'</tbody></table>'
+        +'<div class="sign"><div><div class="line"></div>المستلم</div><div><div class="line"></div>الدافع</div></div>';
+    }
+    window.rcFillIncome=function(){
+      var sel=document.getElementById("rcIncome"); if(!sel)return;
+      var pid=(document.getElementById("rcPerson")||{}).value||"";
+      var list=db.incomes.filter(function(x){return !pid||x.personId===pid;}).sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
+      sel.innerHTML=list.map(function(x){return '<option value="'+x.id+'">'+esc((x.date||"")+' · '+(x.category||"")+' · '+fmt(x.amount)+'₪'+(x.note?(' · '+x.note):''))+'</option>';}).join("")||'<option value="">لا يوجد</option>';
+      renderReceipt();
+    };
+    window.renderReceipt=function(){ var area=document.getElementById("receiptArea"); if(!area)return; var inc=byId(db.incomes,(document.getElementById("rcIncome")||{}).value||""); area.innerHTML=buildReceiptHTML(inc); };
+    window.printReceipt=function(id){
+      var inc=byId(db.incomes,id); if(!inc){alert("لا يوجد سند");return;}
+      var w=window.open("","_blank"); if(!w){alert("اسمح بالنوافذ المنبثقة للطباعة");return;}
+      w.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>سند قبض</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#222}.receipt{max-width:520px;margin:0 auto}.rhead{text-align:center;border-bottom:1px solid #222;padding-bottom:10px;margin-bottom:12px}.rhead .b{font-size:18px;font-weight:700}.rmeta{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:10px}table{width:100%;border-collapse:collapse}table td{border-bottom:1px dotted #ccc;padding:6px 4px;font-size:13px}.sign{display:flex;gap:30px;margin-top:30px}.sign>div{flex:1;text-align:center;font-size:12px}.sign .line{height:34px;border-bottom:1px solid #999;margin-bottom:4px}</style></head><body><div class="receipt">'+buildReceiptHTML(inc)+'</div><script>window.onload=function(){window.print();}<\/script></body></html>');
+      w.document.close();
+    };
+
+    /* كشف حركة الحساب + Excel */
+    function acctStmtData(){
+      var acc=(document.getElementById("acctStmtAccount")||{}).value||"";
+      var type=(document.getElementById("acctStmtType")||{}).value||"all";
+      var rows=[];
+      db.incomes.forEach(function(x){
+        if(acc&&x.accountId!==acc)return;
+        if(type==="water"&&x.category!=="تحصيلات ماء")return;
+        if(type==="services"&&x.category!=="خدمات")return;
+        rows.push({date:x.date||"",kind:"وارد",category:x.category||"",note:(x.personId?((byId(db.people,x.personId)||{}).name||""):"")||x.note||"",inc:Number(x.amount||0),out:0});
+      });
+      if(type==="all"){
+        db.expenses.forEach(function(x){ if(acc&&x.accountId!==acc)return; rows.push({date:x.date||"",kind:"صرف",category:x.category||"",note:x.note||"",inc:0,out:Number(x.amount||0)}); });
+      }
+      rows.sort(function(a,b){return (a.date||"").localeCompare(b.date||"");});
+      return rows;
+    }
+    window.renderAcctStmt=function(){
+      var tb=document.getElementById("acctStmtTbody"); if(!tb)return;
+      var sel=document.getElementById("acctStmtAccount");
+      if(sel){ var cur=sel.value; sel.innerHTML='<option value="">كل الحسابات</option>'+db.accounts.map(function(a){return '<option value="'+a.id+'">'+esc(a.name)+'</option>';}).join(""); if(cur)sel.value=cur; }
+      var rows=acctStmtData(); var ti=0,to=0;
+      tb.innerHTML=rows.map(function(r){ ti+=r.inc; to+=r.out; return '<tr><td class="muted">'+esc(r.date)+'</td><td><span class="chip">'+esc(r.kind)+'</span></td><td>'+esc(r.category)+'</td><td>'+esc(r.note)+'</td><td class="num">'+(r.inc?fmt(r.inc):"—")+'</td><td class="num">'+(r.out?fmt(r.out):"—")+'</td></tr>'; }).join("")||'<tr><td colspan="6" class="empty">لا توجد حركات</td></tr>';
+      var tf=document.getElementById("acctStmtTfoot"); if(tf) tf.innerHTML='<tr><th colspan="4">الإجمالي</th><th class="num">'+fmt(ti)+'</th><th class="num">'+fmt(to)+'</th></tr><tr><th colspan="5">الصافي</th><th class="num">'+fmt(ti-to)+'</th></tr>';
+    };
+    window.exportAcctStmtExcel=function(){
+      if(typeof XLSX==="undefined"){alert("مكتبة Excel غير محمّلة");return;}
+      var rows=acctStmtData(); var accSel=document.getElementById("acctStmtAccount");
+      var accName=(accSel&&accSel.value)?((byId(db.accounts,accSel.value)||{}).name||""):"كل الحسابات";
+      var aoa=[["التاريخ","النوع","التصنيف","البيان","وارد","صرف"]]; var ti=0,to=0;
+      rows.forEach(function(r){ ti+=r.inc; to+=r.out; aoa.push([r.date,r.kind,r.category,r.note,r.inc||0,r.out||0]); });
+      aoa.push(["","","","الإجمالي",ti,to]); aoa.push(["","","","الصافي",ti-to,""]);
+      var ws=XLSX.utils.aoa_to_sheet(aoa); var wb=XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb,ws,"كشف الحساب"); XLSX.writeFile(wb,"كشف_حساب_"+accName+".xlsx");
+    };
+    window.delWaterCategoryAt=function(i){ if(!confirm("حذف التصنيف؟"))return; (db.waterCategories||[]).splice(i,1); save(db); refresh(); };
+
+    /* التقرير الشهري: فترات المياه + الخدمات لكل ساكن */
+    function mrInMonth(dt,m){ return (dt||"").slice(0,7)===m; }
+    function buildMonthlyHTML(forPrint){
+      var mEl=document.getElementById("mrMonth"); var m=mEl?mEl.value:"";
+      var bEl=document.getElementById("mrBuilding"); var building=(bEl&&bEl.value)?bEl.value:"عمارة الحجاز";
+      if(!m) return '<div class="empty">اختر الشهر لعرض التقرير</div>';
+      var periods=db.periods.filter(function(p){return mrInMonth(p.start,m);});
+      var perIds=periods.map(function(p){return p.id;});
+      var svcs=(db.services||[]).filter(function(s){return mrInMonth(s.date,m);});
+      var svcPerPerson=svcs.reduce(function(s,x){return s+Number(x.amount||0);},0);
+      var incs=db.incomes.filter(function(x){return mrInMonth(x.date,m);});
+      var exps=db.expenses.filter(function(x){return mrInMonth(x.date,m);});
+      var totIn=incs.reduce(function(s,x){return s+Number(x.amount||0);},0);
+      var totEx=exps.reduce(function(s,x){return s+Number(x.amount||0);},0);
+      var waterIn=incs.filter(function(x){return x.category==="تحصيلات ماء";}).reduce(function(s,x){return s+Number(x.amount||0);},0);
+      var svcIn=incs.filter(function(x){return x.category==="خدمات";}).reduce(function(s,x){return s+Number(x.amount||0);},0);
+      var accRows=db.accounts.map(function(a){var ai=incs.filter(function(x){return x.accountId===a.id;}).reduce(function(s,x){return s+Number(x.amount||0);},0);var ae=exps.filter(function(x){return x.accountId===a.id;}).reduce(function(s,x){return s+Number(x.amount||0);},0);return '<tr><td>'+esc(a.name)+'</td><td class="num">'+fmt(ai)+'</td><td class="num">'+fmt(ae)+'</td><td class="num">'+fmt(ai-ae)+'</td></tr>';}).join("")||'<tr><td colspan="4" class="empty">لا توجد حسابات</td></tr>';
+      var incRows=incs.slice().sort(function(a,b){return (a.date||"").localeCompare(b.date||"");}).map(function(x){var nm=x.personId?((byId(db.people,x.personId)||{}).name||""):"";var acc=x.accountId?((byId(db.accounts,x.accountId)||{}).name||"—"):"—";return '<tr><td class="muted">'+esc(x.date||"")+'</td><td><span class="chip">'+esc(x.category||"")+'</span></td><td>'+esc(nm||x.note||"")+'</td><td class="muted">'+esc(acc)+'</td><td class="num">'+fmt(x.amount)+'</td></tr>';}).join("")||'<tr><td colspan="5" class="empty">لا يوجد وارد في هذا الشهر</td></tr>';
+      var expRows=exps.slice().sort(function(a,b){return (a.date||"").localeCompare(b.date||"");}).map(function(x){var acc=x.accountId?((byId(db.accounts,x.accountId)||{}).name||"—"):"—";return '<tr><td class="muted">'+esc(x.date||"")+'</td><td><span class="chip">'+esc(x.category||"")+'</span></td><td>'+esc(x.note||"")+'</td><td class="muted">'+esc(acc)+'</td><td class="num">'+fmt(x.amount)+'</td></tr>';}).join("")||'<tr><td colspan="5" class="empty">لا يوجد صادر في هذا الشهر</td></tr>';
+      var perRows=periods.map(function(p){
+        var prs=db.readings.filter(function(r){return r.periodId===p.id;});
+        var m3=prs.reduce(function(s,r){return s+consumption(r);},0);
+        var rev=prs.reduce(function(s,r){return s+readingDue(r);},0);
+        var clk=forPrint?'':' style="cursor:pointer" title="عرض قراءات الفترة" onclick="mrGoPeriod(\''+p.id+'\')"';
+        return '<tr'+clk+'><td>'+esc(p.name)+(forPrint?'':' <span class="chip" style="font-size:10px">عرض القراءات</span>')+'</td><td class="muted">'+esc(p.source||"—")+'</td><td class="num">'+fmt3(m3)+'</td><td class="num">'+fmt(p.pricePerM3)+'</td><td class="num">'+fmt(rev)+'</td></tr>';
+      }).join("")||'<tr><td colspan="5" class="empty">لا توجد فترات في هذا الشهر</td></tr>';
+      var svcRows=svcs.map(function(s){var cnt=db.people.filter(function(pp){return !isSvcExempt(pp.id,s.id);}).length;var clk=forPrint?'':' style="cursor:pointer" title="إدارة إعفاءات هذه الخدمة" onclick="mrGoService()"';return '<tr'+clk+'><td>'+esc(s.label||"")+(forPrint?'':' <span class="chip" style="font-size:10px">إدارة الإعفاء</span>')+'</td><td class="muted">'+esc(s.date||"")+'</td><td class="num">'+fmt(s.amount)+'</td><td class="num">'+cnt+'</td><td class="num">'+fmt(Number(s.amount||0)*cnt)+'</td></tr>';}).join("")||'<tr><td colspan="5" class="empty">لا توجد خدمات في هذا الشهر</td></tr>';
+      var resRows=db.people.map(function(pp){
+        var rs=db.readings.filter(function(r){return r.personId===pp.id&&perIds.indexOf(r.periodId)>=0;});
+        var m3=rs.reduce(function(s,r){return s+consumption(r);},0);
+        var waterDue=rs.reduce(function(s,r){return s+readingDue(r);},0);
+        var anyEx=svcs.some(function(sv){return isSvcExempt(pp.id,sv.id);});
+        var sDue=svcs.reduce(function(s,sv){return s+(isSvcExempt(pp.id,sv.id)?0:Number(sv.amount||0));},0);
+        var paid=incs.filter(function(x){return x.personId===pp.id;}).reduce(function(s,x){return s+Number(x.amount||0);},0);
+        if(m3===0&&waterDue===0&&sDue===0&&paid===0) return "";
+        var tags=rs.map(function(r){var p=byId(db.periods,r.periodId);var ex=!!r.exempt;return '<span class="chip"'+(ex?' style="opacity:.55"':'')+'>'+esc((p?p.name:"")+': '+fmt3(consumption(r))+'م³'+(ex?' (معفى)':''))+'</span>';}).join(" ");
+        var act=forPrint?'':'<td class="noprint right"><button class="btn sm" onclick="setTab(\'services\')">إدارة الإعفاء</button></td>';
+        return '<tr><td>'+esc(pp.name)+(anyEx?' <span class="chip">إعفاء خدمات</span>':'')+(tags?'<div style="margin-top:3px">'+tags+'</div>':'')+'</td>'
+          +'<td class="num">'+fmt3(m3)+'</td><td class="num">'+fmt(waterDue)+'</td><td class="num">'+fmt(sDue)+(anyEx?' <span class="chip">معفى جزئيًا</span>':'')+'</td>'
+          +'<td class="num">'+fmt(waterDue+sDue)+'</td><td class="num">'+fmt(paid)+'</td>'+act+'</tr>';
+      }).join("")||'<tr><td colspan="'+(forPrint?6:7)+'" class="empty">لا توجد حركة للسكان في هذا الشهر</td></tr>';
+      var head=forPrint?('<div style="text-align:center;margin-bottom:14px"><div style="font-size:20px;font-weight:800">'+esc(building)+'</div><div>التقرير الشهري — '+esc(m)+'</div></div>'):('<div style="font-size:18px;font-weight:800;color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:8px;margin-bottom:12px">التقرير الشهري — '+esc(building)+' — '+esc(m)+'</div>');
+      return head
+        +'<div class="kpis"><div class="kpi"><div class="t">إجمالي الوارد</div><div class="v">'+fmt(totIn)+'</div></div>'
+        +'<div class="kpi"><div class="t">إجمالي المصاريف</div><div class="v">'+fmt(totEx)+'</div></div>'
+        +'<div class="kpi"><div class="t">الصافي</div><div class="v">'+fmt(totIn-totEx)+'</div></div>'
+        +'<div class="kpi"><div class="t">تحصيل مياه/خدمات</div><div class="v">'+fmt(waterIn)+' / '+fmt(svcIn)+'</div></div></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">فترات تعبئة المياه خلال الشهر</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>الفترة</th><th>المصدر</th><th class="num">السحب م³</th><th class="num">سعر م³</th><th class="num">الإيراد المحتسب</th></tr></thead><tbody>'+perRows+'</tbody></table></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">خدمات العمارة خلال الشهر</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>البيان</th><th>التاريخ</th><th class="num">المبلغ/ساكن</th><th class="num">عدد السكان</th><th class="num">الإجمالي</th></tr></thead><tbody>'+svcRows+'</tbody></table></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">كشف السكان — مياه الفترات + الخدمات</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>الساكن</th><th class="num">الاستهلاك م³</th><th class="num">مستحق المياه</th><th class="num">مستحق الخدمات</th><th class="num">إجمالي المستحق</th><th class="num">المدفوع بالشهر</th>'+(forPrint?'':'<th class="noprint"></th>')+'</tr></thead><tbody>'+resRows+'</tbody></table></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">الحسابات (حركة الشهر)</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>الحساب</th><th class="num">وارد الشهر</th><th class="num">صادر الشهر</th><th class="num">صافي الشهر</th></tr></thead><tbody>'+accRows+'</tbody><tfoot><tr><th>الإجمالي</th><th class="num">'+fmt(totIn)+'</th><th class="num">'+fmt(totEx)+'</th><th class="num">'+fmt(totIn-totEx)+'</th></tr></tfoot></table></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">الوارد خلال الشهر</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>التاريخ</th><th>التصنيف</th><th>الساكن/البيان</th><th>الحساب</th><th class="num">المبلغ</th></tr></thead><tbody>'+incRows+'</tbody><tfoot><tr><th colspan="4">إجمالي الوارد</th><th class="num">'+fmt(totIn)+'</th></tr></tfoot></table></div>'
+        +'<div class="sectionTitle" style="margin-top:16px">الصادر خلال الشهر</div>'
+        +'<div class="tableWrap"><table class="bare"><thead><tr><th>التاريخ</th><th>التصنيف</th><th>البيان</th><th>الحساب</th><th class="num">المبلغ</th></tr></thead><tbody>'+expRows+'</tbody><tfoot><tr><th colspan="4">إجمالي الصادر</th><th class="num">'+fmt(totEx)+'</th></tr></tfoot></table></div>';
+    }
+    window.mrGoPeriod=function(pid){ try{ setTab("readings"); var f=document.getElementById("rdFilterPeriod"); if(f){ f.value=pid; if(typeof renderReadings==="function") renderReadings(); } }catch(e){console.error(e);} };
+    window.mrGoService=function(){ try{ setTab("services"); setTimeout(function(){ var c=document.getElementById("svcExemptCard"); if(c)c.scrollIntoView({behavior:"smooth",block:"start"}); },150); }catch(e){console.error(e);} };
+    window.renderMonthlyPreview=function(){ var area=document.getElementById("monthlyArea"); if(!area)return; area.innerHTML=buildMonthlyHTML(false); };
+    window.printMonthlyReport=function(){
+      var html=buildMonthlyHTML(true);
+      var w=window.open("","_blank"); if(!w){alert("اسمح بالنوافذ المنبثقة للطباعة");return;}
+      w.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>التقرير الشهري</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:22px;color:#222}table{width:100%;border-collapse:collapse;margin-bottom:6px}th,td{border:1px solid #ccc;padding:5px 6px;font-size:12px;text-align:right}th{background:#f3f3f1}.num{text-align:left}.sectionTitle{font-size:13px;font-weight:700;margin:16px 0 6px;color:#0F4C5C}.kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}.kpi{border:1px solid #ccc;border-radius:6px;padding:8px 12px;flex:1}.kpi .t{font-size:11px;color:#666}.kpi .v{font-size:16px;font-weight:800}.chip{display:inline-block;background:#f1f1ef;border-radius:4px;padding:1px 6px;font-size:11px;margin:1px}.empty{text-align:center;color:#888;padding:8px}</style></head><body>'+html+'<script>window.onload=function(){window.print();}<\/script></body></html>');
+      w.document.close();
+    };
+
+    /* حقن عناصر الواجهة */
+    function ensureInjections(){
+      var mrM=document.getElementById("mrMonth");
+      if(mrM&&!mrM.value){ var ps=db.periods.map(function(p){return (p.start||"").slice(0,7);}).filter(Boolean).sort(); if(ps.length) mrM.value=ps[ps.length-1]; }
+      var stPerEl=document.getElementById("stPeriod");
+      if(stPerEl){ var d=stPerEl.parentElement; if(d&&d.style)d.style.display="none"; }
+      var stRow=document.querySelector("#view-statement .row");
+      if(stRow&&!document.getElementById("stPeriodFrom")){
+        var d1=document.createElement("div"); d1.innerHTML='<label>من فترة</label><select id="stPeriodFrom" onchange="renderStatement()"></select>';
+        var d2=document.createElement("div"); d2.innerHTML='<label>إلى فترة</label><select id="stPeriodTo" onchange="renderStatement()"></select>';
+        stRow.appendChild(d1); stRow.appendChild(d2);
+      }
+      var perSrc=document.getElementById("perSource");
+      if(perSrc&&!document.getElementById("wcManage")){
+        var mg=document.createElement("div"); mg.id="wcManage"; mg.style.marginTop="6px";
+        mg.innerHTML='<div class="muted" style="font-size:12px;margin:6px 0 4px">تصنيفات المياه (أضِف/احذف بحرية):</div><div class="row" style="gap:6px"><input id="wcNew" placeholder="تصنيف جديد (مثال: مياه العمارة)"/><button type="button" class="btn sm" onclick="addWaterCategory()">إضافة</button></div><div id="wcList" style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px"></div>';
+        perSrc.insertAdjacentElement("afterend",mg);
+      }
+      var rdPer=document.getElementById("rdPeriod");
+      if(rdPer&&!document.getElementById("rdCategory")){
+        var wrap=document.createElement("div"); wrap.innerHTML='<label>تصنيف المياه</label><select id="rdCategory"></select>';
+        rdPer.insertAdjacentElement("afterend",wrap);
+      }
+      var accView=document.getElementById("view-accounts");
+      if(accView&&!document.getElementById("acctStmtCard")){
+        var card=document.createElement("div"); card.className="card"; card.id="acctStmtCard"; card.style.marginTop="18px";
+        card.innerHTML='<div class="topbar"><div class="sectionTitle" style="margin:0">كشف حركة الحساب</div><div class="noprint tools"><select id="acctStmtAccount" style="min-width:160px" onchange="renderAcctStmt()"></select><select id="acctStmtType" style="min-width:150px" onchange="renderAcctStmt()"><option value="all">الكل</option><option value="water">تعبئات المياه</option><option value="services">الخدمات</option></select><button class="btn sm solid" onclick="exportAcctStmtExcel()">تصدير Excel</button></div></div><div class="tableWrap" style="margin-top:12px"><table class="bare"><thead><tr><th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>البيان</th><th class="num">وارد</th><th class="num">صرف</th></tr></thead><tbody id="acctStmtTbody"></tbody><tfoot id="acctStmtTfoot"></tfoot></table></div>';
+        accView.appendChild(card);
+      }
+      var svcView=document.getElementById("view-services");
+      if(svcView&&!document.getElementById("svcExemptCard")){
+        var sc=document.createElement("div"); sc.className="card"; sc.id="svcExemptCard"; sc.style.marginTop="18px";
+        sc.innerHTML='<div class="sectionTitle">بنود الخدمات والإعفاءات لكل ساكن</div><div class="muted" style="font-size:12px;margin-bottom:10px">لكل ساكن تظهر بنود الخدمات لكل شهر. اضغط على قيمة الخدمة لإعفاء الساكن من ذلك الشهر فقط (يبقى مستحقًا لباقي الأشهر)، ويظهر الإجمالي المستحق بعد الإعفاء.</div><div class="tableWrap"><table class="bare" id="svcExemptTable"></table></div>';
+        svcView.appendChild(sc);
+      }
+      var svcTb=document.getElementById("servicesTbody");
+      if(svcTb&&!svcTb.__hgClick){ svcTb.__hgClick=true; svcTb.addEventListener("click",function(){ var c=document.getElementById("svcExemptCard"); if(c)c.scrollIntoView({behavior:"smooth",block:"start"}); }); }
+      if(!document.getElementById("hgPayModal")){ var pm=document.createElement("div"); pm.id="hgPayModal"; pm.className="modalOverlay"; pm.innerHTML='<div class="modalBox"><div class="sectionTitle" id="hgPayTitle">قبض / تسديد</div><div id="hgPayInfo" class="muted" style="font-size:13px;margin-bottom:6px"></div><label>المبلغ</label><input id="hgPayAmount" type="number" step="0.01"/><label>تاريخ الدفعة</label><input id="hgPayDate" type="date"/><label>الحساب</label><select id="hgPayAccount"></select><label>ملاحظة</label><input id="hgPayNote"/><div class="btnRow"><button class="btn solid" onclick="hgPaySave()">حفظ القبض</button><button class="btn" onclick="hgPayClose()">إلغاء</button></div></div>'; document.body.appendChild(pm); }
+      if(!document.getElementById("hgRdModal")){ var rm=document.createElement("div"); rm.id="hgRdModal"; rm.className="modalOverlay"; rm.innerHTML='<div class="modalBox"><div class="sectionTitle">تعديل القراءة</div><div id="hgRdInfo" class="muted" style="font-size:13px;margin-bottom:6px"></div><div class="row"><div><label>السابقة</label><input id="hgRdPrev" type="number"/></div><div><label>الحالية</label><input id="hgRdCurr" type="number"/></div></div><div class="row"><div><label>سعر المتر</label><input id="hgRdPrice" type="number" step="0.0001"/></div><div><label>التاريخ</label><input id="hgRdDate" type="date"/></div></div><div class="btnRow"><button class="btn solid" onclick="hgRdSave()">حفظ التعديل</button><button class="btn" onclick="hgRdClose()">إلغاء</button></div></div>'; document.body.appendChild(rm); }
+    }
+    function syncCategoryUI(){
+      var cats=db.waterCategories||[];
+      var perSrc=document.getElementById("perSource");
+      if(perSrc){ var c1=perSrc.value; perSrc.innerHTML='<option value="">—</option>'+cats.map(function(c){return '<option>'+esc(c)+'</option>';}).join(""); if(c1&&cats.indexOf(c1)>=0)perSrc.value=c1; }
+      var rdCat=document.getElementById("rdCategory");
+      if(rdCat){ var c2=rdCat.value; rdCat.innerHTML='<option value="">— تصنيف —</option>'+cats.map(function(c){return '<option>'+esc(c)+'</option>';}).join(""); if(c2&&cats.indexOf(c2)>=0)rdCat.value=c2; }
+      var list=document.getElementById("wcList");
+      if(list){ list.innerHTML=cats.map(function(c,i){return '<span class="chip">'+esc(c)+' <span style="cursor:pointer;color:var(--owe)" onclick="delWaterCategoryAt('+i+')">×</span></span>';}).join("")||'<span class="muted" style="font-size:12px">لا توجد تصنيفات</span>'; }
+    }
+    function fixPeopleOutstanding(){ var tb=document.getElementById("peopleTbody"); if(!tb)return; var rows=tb.querySelectorAll("tr"); for(var i=0;i<rows.length;i++){ var cells=rows[i].querySelectorAll("td"); if(cells.length<2)continue; var nm=(cells[0].textContent||"").trim(); var per=db.people.filter(function(p){return p.name===nm;})[0]; if(!per)continue; cells[1].textContent=fmt(personOutstanding(per.id))+" ₪"; } }
+    function fixDashboardOutstanding(){ var kp=document.getElementById("kpis"); if(!kp)return; var total=db.people.reduce(function(s,p){return s+personOutstanding(p.id);},0); var cards=kp.querySelectorAll(".kpi"); for(var i=0;i<cards.length;i++){ var t=cards[i].querySelector(".t"), v=cards[i].querySelector(".v"); if(t&&v&&t.textContent.indexOf("المتبقي")>=0&&t.textContent.indexOf("السكان")>=0){ v.textContent=fmt(total)+" ₪"; } } }
+    function patchUI(){ try{ensureInjections();}catch(e){console.error(e);} try{syncCategoryUI();}catch(e){console.error(e);} try{renderAcctStmt();}catch(e){console.error(e);} try{renderMonthlyPreview();}catch(e){console.error(e);} try{renderSvcExempt();}catch(e){console.error(e);} try{renderDebts();}catch(e){console.error(e);} try{fixPeopleOutstanding();}catch(e){console.error(e);} try{fixDashboardOutstanding();}catch(e){console.error(e);} }
+
+    var _refresh=window.refresh;
+    window.refresh=function(){ try{ if(typeof _refresh==="function")_refresh(); }catch(e){console.error(e);} patchUI(); };
+
+    ensureInjections();
+    syncCategoryUI();
+    refresh();
+  }
+  if(document.readyState==="complete"){ setTimeout(init,300); }
+  else { window.addEventListener("load",function(){ setTimeout(init,300); }); }
+  setTimeout(init,1500);
+})();
+</script>
+</head>
+<body>
+<header>
+  <div class="wrap head">
+    <div class="topbar">
+      <div>
+        <h1>نظام إدارة المبنى</h1>
+        <div class="sub">المياه · الوارد · المصاريف · الحسابات · المديونية · الفواتير · خدمات العمارة</div>
+      </div>
+      <div class="noprint btnRow" style="margin-top:4px">
+        <button class="btn" onclick="exportJSON()">تصدير نسخة</button>
+        <button class="btn" onclick="importJSON()">استيراد</button>
+        <button class="btn link" onclick="resetSeed()">استعادة بيانات النظام</button>
+      </div>
+    </div>
+    <nav class="noprint" id="mainNav">
+      <button id="tab-dashboard" class="active" onclick="setTab('dashboard')">لوحة التحكم</button>
+      <div class="navGroup">
+        <button type="button" class="gbtn">السكان</button>
+        <div class="navMenu">
+          <button id="tab-people" onclick="setTab('people')">السكان</button>
+          <button id="tab-debts" onclick="setTab('debts')">المديونية</button>
+          <button id="tab-statement" onclick="setTab('statement')">كشف حساب</button>
+          <button id="tab-receipt" onclick="setTab('receipt')">سند قبض</button>
+        </div>
+      </div>
+      <div class="navGroup">
+        <button type="button" class="gbtn">القراءات</button>
+        <div class="navMenu">
+          <button id="tab-periods" onclick="setTab('periods')">فترات التعبئة</button>
+          <button id="tab-readings" onclick="setTab('readings')">القراءات</button>
+        </div>
+      </div>
+      <div class="navGroup">
+        <button type="button" class="gbtn">الفواتير والخدمات</button>
+        <div class="navMenu">
+          <button id="tab-services" onclick="setTab('services')">خدمات العمارة</button>
+          <button id="tab-bills" onclick="setTab('bills')">فواتير عامة (مولد/كهرباء…)</button>
+          <button id="tab-prints" onclick="setTab('prints')">المطبوعات</button>
+        </div>
+      </div>
+      <div class="navGroup">
+        <button type="button" class="gbtn">الحركات المالية</button>
+        <div class="navMenu">
+          <button id="tab-income" onclick="setTab('income')">الوارد</button>
+          <button id="tab-expenses" onclick="setTab('expenses')">المصاريف</button>
+          <button id="tab-accounts" onclick="setTab('accounts')">الحسابات</button>
+        </div>
+      </div>
+      <div class="navGroup">
+        <button type="button" class="gbtn">التقارير</button>
+        <div class="navMenu">
+          <button id="tab-monthly" onclick="setTab('monthly')">التقرير الشهري الكامل</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- DASHBOARD -->
+  <section id="view-dashboard" class="view">
+    <div class="kpis" id="kpis"></div>
+    <div class="grid" style="margin-top:18px">
+      <div class="card">
+        <div class="sectionTitle">إدخال سريع — قبض</div>
+        <label>الساكن (اختياري)</label><select id="qiPerson"></select>
+        <div class="row">
+          <div><label>المبلغ</label><input id="qiAmount" type="number" step="0.01"/></div>
+          <div><label>تاريخ الدفعة</label><input id="qiDate" type="date"/></div>
+        </div>
+        <div class="row">
+          <div><label>التصنيف</label>
+            <select id="qiCat"><option>تحصيلات ماء</option><option>خدمات</option><option>تسديد ديون سابق</option><option>اخرى</option></select></div>
+          <div><label>الحساب</label><select id="qiAccount"></select></div>
+        </div>
+        <label>ملاحظة</label><input id="qiNote"/>
+        <div class="btnRow"><button class="btn solid" onclick="quickIncome()">حفظ القبض</button></div>
+      </div>
+      <div class="card">
+        <div class="sectionTitle">إدخال سريع — صرف</div>
+        <div class="row">
+          <div><label>المبلغ</label><input id="qeAmount" type="number" step="0.01"/></div>
+          <div><label>التاريخ</label><input id="qeDate" type="date"/></div>
+        </div>
+        <div class="row">
+          <div><label>التصنيف</label>
+            <select id="qeCat"><option>مشتريات</option><option>سولار لصالح الخدمة</option><option>اجرة حارس</option><option>اخرى</option></select></div>
+          <div><label>الحساب</label><select id="qeAccount"></select></div>
+        </div>
+        <label>البيان</label><input id="qeNote"/>
+        <div class="btnRow"><button class="btn solid" onclick="quickExpense()">حفظ الصرف</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEBTS -->
+  <section id="view-debts" class="view" style="display:none">
+    <div class="card">
+      <div class="topbar">
+        <div class="sectionTitle" style="margin:0">مديونية السكان</div>
+        <div class="noprint tools">
+          <select id="debtPeriod" onchange="renderDebts()" style="min-width:160px"></select>
+          <button class="btn sm" onclick="excelOf(debtsData)">Excel</button>
+          <button class="btn sm" onclick="pdfOf(debtsData)">PDF</button>
+        </div>
+      </div>
+      <div class="muted" style="font-size:12px;margin:8px 0 14px">إجمالي المستحق = مستحق المياه (الفرق × سعر المتر من القراءات) + مستحق خدمات العمارة · المدفوع = القبض المرتبط بالساكن · المتبقي = إجمالي المستحق − المدفوع.</div>
+      <div class="tableWrap">
+        <table><thead><tr><th>الساكن</th><th class="num">الاستهلاك (م³)</th><th class="num">مستحق المياه</th><th class="num">مستحق الخدمات</th><th class="num">دين سابق</th><th class="num">إجمالي المستحق</th><th class="num">المدفوع</th><th class="num">المتبقي</th></tr></thead>
+        <tbody id="debtsTbody"></tbody><tfoot id="debtsTfoot"></tfoot></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PEOPLE -->
+  <section id="view-people" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إضافة / تعديل ساكن</div>
+        <label>الاسم</label><input id="pName"/>
+        <label>دين قديم قبل الإدارة (₪)</label><input id="pOldDebt" type="number" step="0.01" value="0"/>
+        <label>ملاحظات</label><textarea id="pNotes"></textarea>
+        <div class="btnRow"><button class="btn solid" id="pSaveBtn" onclick="addPerson()">حفظ</button><button class="btn" id="pCancelBtn" style="display:none" onclick="cancelEditPerson()">إلغاء التعديل</button></div>
+        <div class="muted" style="font-size:12px;margin-top:8px">«الدين القديم» هو مديونية الساكن قبل بداية إدارتك، يظهر في كشف الحساب ويُسدَّد بتصنيف «تسديد ديون سابق».</div>
+      </div>
+      <div class="card">
+        <div class="topbar"><div class="sectionTitle" style="margin:0">السكان</div>
+          <input id="pSearch" placeholder="بحث..." style="max-width:200px" oninput="renderPeople()"/></div>
+        <div class="tableWrap" style="margin-top:12px">
+          <table><thead><tr><th>الاسم</th><th class="num">المتبقي عليه</th><th>ملاحظات</th><th class="noprint"></th></tr></thead>
+          <tbody id="peopleTbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERIODS -->
+  <section id="view-periods" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إضافة فترة تعبئة</div>
+        <label>اسم الفترة</label><input id="perName"/>
+        <label>المصدر</label>
+        <select id="perSource"><option value="">—</option><option>مولد</option><option>مولد البابا</option><option>مولد الخدمة العامة</option></select>
+        <div class="row"><div><label>من</label><input id="perStart" type="date"/></div><div><label>إلى</label><input id="perEnd" type="date"/></div></div>
+        <div class="row"><div><label>إجمالي السحب (م³)</label><input id="perTotal" type="number" step="0.001"/></div>
+          <div><label>سعر المتر المكعب</label><input id="perPrice" type="number" step="0.0001"/></div></div>
+        <label>ملاحظة التسعير</label><input id="perNote"/>
+        <div class="btnRow"><button class="btn solid" id="perSaveBtn" onclick="addPeriod()">حفظ</button><button class="btn" id="perCancelBtn" style="display:none" onclick="cancelEditPeriod()">إلغاء التعديل</button></div>
+      </div>
+      <div class="card">
+        <div class="sectionTitle">الفترات</div>
+        <div class="tableWrap">
+          <table><thead><tr><th>الفترة</th><th>المدة</th><th>المصدر</th><th class="num">سعر م³</th><th class="num">السحب</th><th>الحالة</th><th class="noprint"></th></tr></thead>
+          <tbody id="periodsTbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- READINGS -->
+  <section id="view-readings" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إضافة قراءة</div>
+        <label>الساكن</label><select id="rdPerson"></select>
+        <label>الفترة</label><select id="rdPeriod" onchange="rdSyncPrice()"></select>
+        <div class="row"><div><label>السابقة</label><input id="rdPrev" type="number"/></div><div><label>الحالية</label><input id="rdCurr" type="number"/></div></div>
+        <div class="row"><div><label>سعر المتر</label><input id="rdPrice" type="number" step="0.0001"/></div><div><label>التاريخ</label><input id="rdDate" type="date"/></div></div>
+        <div class="btnRow"><button class="btn solid" onclick="addReading()">حفظ القراءة</button></div>
+        <hr/>
+        <div class="sectionTitle">استيراد قراءات من Excel</div>
+        <label>الفترة الافتراضية (إن لم يوجد عمود «الفترة»)</label><select id="impPeriod"></select>
+        <div class="btnRow"><button class="btn" onclick="downloadReadingsTemplate()">تحميل قالب Excel</button><button class="btn solid" onclick="importReadings()">استيراد ملف Excel</button></div>
+        <div class="muted" style="font-size:12px;margin-top:8px">الأعمدة المدعومة: الاسم، السابقة، الحالية، السعر (اختياري)، التاريخ (اختياري)، الفترة (اختياري). أي ساكن غير موجود سيُضاف تلقائيًا.</div>
+      </div>
+      <div class="card">
+        <div class="topbar"><div class="sectionTitle" style="margin:0">القراءات</div>
+          <div class="noprint tools">
+            <select id="rdFilterPeriod" style="min-width:150px" onchange="renderReadings()"></select>
+            <button class="btn sm" onclick="excelOf(readingsData)">Excel</button>
+            <button class="btn sm" onclick="pdfOf(readingsData)">PDF</button>
+          </div></div>
+        <div class="tableWrap" style="margin-top:12px">
+          <table class="bare"><thead><tr><th>الساكن</th><th>الفترة</th><th class="num">سابقة</th><th class="num">حالية</th><th class="num">م³</th><th class="num">السعر</th><th class="num">الإجمالي</th><th class="noprint"></th></tr></thead>
+          <tbody id="readingsTbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONTHLY SERVICES -->
+  <section id="view-services" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إعدادات خدمة العمارة (المبلغ + الشهر)</div>
+        <label>الشهر / البيان</label><input id="svName" placeholder="مثال: خدمات شهر مايو 2026"/>
+        <div class="row"><div><label>المبلغ الثابت لكل ساكن (₪)</label><input id="svAmount" type="number" step="0.01"/></div><div><label>التاريخ</label><input id="svDate" type="date"/></div></div>
+        <div class="btnRow"><button class="btn solid" id="svSaveBtn" onclick="addService()">حفظ</button><button class="btn" id="svCancelBtn" style="display:none" onclick="cancelEditService()">إلغاء التعديل</button></div>
+        <div class="muted" style="font-size:12px;margin-top:8px">يُطبَّق المبلغ نفسه على جميع السكان لكل شهر مُسجَّل، ويُضاف تلقائيًا إلى مستحقات كل ساكن في قسم «المديونية» وفي كشف الحساب.</div>
+      </div>
+      <div class="card">
+        <div class="topbar"><div class="sectionTitle" style="margin:0">الخدمات الشهرية</div></div>
+        <div class="tableWrap" style="margin-top:12px">
+          <table class="bare"><thead><tr><th>البيان</th><th class="num">المبلغ/ساكن</th><th class="num">الإجمالي</th><th>التاريخ</th><th class="noprint"></th></tr></thead>
+          <tbody id="servicesTbody"></tbody><tfoot id="servicesTfoot"></tfoot></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INCOME -->
+  <section id="view-income" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إضافة وارد (قبض)</div>
+        <label>الساكن (اختياري)</label><select id="inPerson"></select>
+        <div class="row"><div><label>تاريخ الدفعة</label><input id="inDate" type="date"/></div><div><label>المبلغ</label><input id="inAmount" type="number" step="0.01"/></div></div>
+        <label>التصنيف</label>
+        <select id="inCat"><option>تحصيلات ماء</option><option>خدمات</option><option>تسديد ديون سابق</option><option>اخرى</option></select>
+        <label>الحساب</label><select id="inAccount"></select>
+        <label>ملاحظة</label><input id="inNote"/>
+        <div class="btnRow"><button class="btn solid" id="inSaveBtn" onclick="addIncome()">حفظ</button><button class="btn" id="inCancelBtn" style="display:none" onclick="cancelEditIncome()">إلغاء التعديل</button></div>
+      </div>
+      <div class="card">
+        <div class="topbar"><div class="sectionTitle" style="margin:0">الوارد</div>
+          <div class="noprint tools">
+            <input id="inFilterMonth" type="month" onchange="renderIncome()" style="max-width:150px"/>
+            <select id="inFilterPerson" style="min-width:150px" onchange="renderIncome()"></select>
+            <button class="btn sm" onclick="excelOf(incomeData)">Excel</button>
+            <button class="btn sm" onclick="pdfOf(incomeData)">PDF</button>
+          </div></div>
+        <div class="tableWrap" style="margin-top:12px">
+          <table class="bare"><thead><tr><th>التاريخ</th><th>التصنيف</th><th>الساكن/البيان</th><th>الحساب</th><th class="num">المبلغ</th><th class="noprint"></th></tr></thead>
+          <tbody id="incomeTbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPENSES -->
+  <section id="view-expenses" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إضافة مصروف (صرف)</div>
+        <div class="row"><div><label>التاريخ</label><input id="exDate" type="date"/></div><div><label>المبلغ</label><input id="exAmount" type="number" step="0.01"/></div></div>
+        <label>التصنيف</label>
+        <select id="exCat"><option>مشتريات</option><option>سولار لصالح الخدمة</option><option>اجرة حارس</option><option>اخرى</option></select>
+        <label>الحساب</label><select id="exAccount"></select>
+        <label>البيان</label><input id="exNote"/>
+        <div class="btnRow"><button class="btn solid" id="exSaveBtn" onclick="addExpense()">حفظ</button><button class="btn" id="exCancelBtn" style="display:none" onclick="cancelEditExpense()">إلغاء التعديل</button></div>
+      </div>
+      <div class="card">
+        <div class="topbar"><div class="sectionTitle" style="margin:0">المصاريف</div>
+          <div class="noprint tools">
+            <input id="exFilterMonth" type="month" onchange="renderExpenses()" style="max-width:150px"/>
+            <select id="exFilterAccount" style="min-width:150px" onchange="renderExpenses()"></select>
+            <button class="btn sm" onclick="excelOf(expensesData)">Excel</button>
+            <button class="btn sm" onclick="pdfOf(expensesData)">PDF</button>
+          </div></div>
+        <div class="tableWrap" style="margin-top:12px">
+          <table class="bare"><thead><tr><th>التاريخ</th><th>التصنيف</th><th>البيان</th><th>الحساب</th><th class="num">المبلغ</th><th class="noprint"></th></tr></thead>
+          <tbody id="expensesTbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATEMENT -->
+  <section id="view-statement" class="view" style="display:none">
+    <div class="card">
+      <div class="topbar noprint">
+        <div class="row" style="max-width:640px">
+          <div><label>الساكن</label><select id="stPerson" onchange="renderStatement()"></select></div>
+          <div><label>الفترة</label><select id="stPeriod" onchange="renderStatement()"></select></div>
+        </div>
+        <button class="btn" style="align-self:flex-end" onclick="window.print()">طباعة كشف الحساب</button>
+      </div>
+      <div id="statementArea" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- RECEIPT -->
+  <section id="view-receipt" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card noprint">
+        <div class="sectionTitle">إعداد سند قبض</div>
+        <label>الساكن</label><select id="rcPerson" onchange="rcFillIncome()"></select>
+        <label>عملية القبض</label><select id="rcIncome" onchange="renderReceipt()"></select>
+        <label>اسم المبنى / العنوان</label><input id="rcBuilding" value="عمارة الحجاز" oninput="renderReceipt()"/>
+        <label>بيان إضافي</label><input id="rcExtra" oninput="renderReceipt()"/>
+        <div class="btnRow"><button class="btn solid" onclick="printReceipt(document.getElementById('rcIncome').value)">طباعة السند</button></div>
+      </div>
+      <div class="card" id="receiptPaper"><div id="receiptArea" class="receipt"></div></div>
+    </div>
+  </section>
+
+  <!-- PRINTS (unified) -->
+  <section id="view-prints" class="view" style="display:none">
+    <div class="card">
+      <div class="topbar noprint">
+        <div class="row" style="max-width:980px">
+          <div><label>نوع المطبوعة</label>
+            <select id="printType" onchange="onPrintTypeChange()">
+              <option value="water">فواتير استهلاك المياه</option>
+              <option value="services">فواتير خدمات العمارة</option>
+              <option value="payments">سندات الدفعات (تحصيلات + خدمات)</option>
+              <option value="balance">كشف أرصدة السكان</option>
+              <option value="personstmt">كشف حساب مختصر للسكان</option>
+            </select></div>
+          <div><label>اسم المبنى</label><input id="prBuilding" value="عمارة الحجاز" oninput="renderPrintPreview()"/></div>
+          <div id="prPeriodWrap"><label>الفترة</label><select id="prPeriod" onchange="renderPrintPreview()"></select></div>
+          <div id="prServiceWrap" style="display:none"><label>مبلغ الخدمة لكل ساكن (₪)</label><input id="prServiceAmount" type="number" step="1" value="50" oninput="renderPrintPreview()"/></div>
+          <div id="prLabelWrap" style="display:none"><label>بيان الفترة</label><input id="prLabel" value="مايو 2026" oninput="renderPrintPreview()"/></div>
+        </div>
+        <div class="tools" style="align-self:flex-end">
+          <button class="btn" onclick="renderPrintPreview()">تحديث المعاينة</button>
+          <button class="btn solid" onclick="openPrint()">طباعة / حفظ PDF</button>
+        </div>
+      </div>
+      <div class="muted noprint" id="prHint" style="font-size:12px;margin:8px 0 12px"></div>
+      <iframe id="printFrame" class="billsFrame noprint"></iframe>
+    </div>
+  </section>
+
+  <!-- ACCOUNTS -->
+  <section id="view-accounts" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إضافة حساب</div>
+        <label>اسم الحساب</label><input id="accName"/>
+        <label>رصيد افتتاحي</label><input id="accOpening" type="number" step="0.01" value="0"/>
+        <div class="btnRow"><button class="btn solid" onclick="addAccount()">حفظ</button></div>
+      </div>
+      <div class="card">
+        <div class="topbar"><div class="sectionTitle" style="margin:0">الحسابات والأرصدة</div>
+          <div class="noprint tools">
+            <select id="accReportAccount" style="min-width:150px"><option value="">كل الحسابات</option></select>
+            <button class="btn solid sm" onclick="printAccountReport()">تقرير كامل (طباعة)</button>
+            <button class="btn sm" onclick="excelOf(accountsData)">Excel</button>
+            <button class="btn sm" onclick="pdfOf(accountsData)">PDF</button>
+          </div></div>
+        <div class="tableWrap">
+          <table><thead><tr><th>الحساب</th><th class="num">الوارد</th><th class="num">المصاريف</th><th class="num">الرصيد</th><th class="noprint"></th></tr></thead>
+          <tbody id="accountsTbody"></tbody><tfoot id="accountsTfoot"></tfoot></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GENERAL BILLS -->
+  <section id="view-bills" class="view" style="display:none">
+    <div class="grid wide">
+      <div class="card">
+        <div class="sectionTitle">إضافة فاتورة عامة</div>
+        <label>اسم الفاتورة / الجهة</label><input id="blName" placeholder="مثال: مولد الشارع - البابا"/>
+        <div class="row"><div><label>المبلغ (₪)</label><input id="blAmount" type="number" step="0.01"/></div><div><label>التاريخ</label><input id="blDate" type="date"/></div></div>
+        <label>الحساب المُموِّل (عند التسديد)</label><select id="blAccount"></select>
+        <label>ملاحظة</label><input id="blNote"/>
+        <div class="btnRow"><button class="btn solid" id="blSaveBtn" onclick="addBill()">حفظ</button><button class="btn" id="blCancelBtn" style="display:none" onclick="cancelEditBill()">إلغاء التعديل</button></div>
+        <div class="muted" style="font-size:12px;margin-top:8px">سجّل هنا الفواتير العامة (مولد الشارع، البابا، كهرباء، صيانة…). عند الضغط على «تسديد» تُسجَّل كمصروف على الحساب المختار وتظهر في الحسابات والتقرير الشهري.</div>
+      </div>
+      <div class="card">
+        <div class="topbar"><div class="sectionTitle" style="margin:0">الفواتير العامة</div>
+          <div class="noprint tools">
+            <select id="blFilter" onchange="renderBills()" style="min-width:130px"><option value="">الكل</option><option value="unpaid">غير مدفوعة</option><option value="paid">مدفوعة</option></select>
+            <button class="btn sm" onclick="excelOf(billsData)">Excel</button>
+            <button class="btn sm" onclick="pdfOf(billsData)">PDF</button>
+          </div></div>
+        <div class="tableWrap" style="margin-top:12px">
+          <table class="bare"><thead><tr><th>الفاتورة</th><th class="num">المبلغ</th><th>التاريخ</th><th>الحالة</th><th class="noprint"></th></tr></thead>
+          <tbody id="billsTbody"></tbody><tfoot id="billsTfoot"></tfoot></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONTHLY REPORT -->
+  <section id="view-monthly" class="view" style="display:none">
+    <div class="card">
+      <div class="topbar noprint">
+        <div class="row" style="max-width:520px">
+          <div><label>الشهر</label><input id="mrMonth" type="month" onchange="renderMonthlyPreview()"/></div>
+          <div><label>اسم المبنى</label><input id="mrBuilding" value="عمارة الحجاز" oninput="renderMonthlyPreview()"/></div>
+        </div>
+        <button class="btn solid" style="align-self:flex-end" onclick="printMonthlyReport()">طباعة التقرير الشهري الكامل</button>
+      </div>
+      <div id="monthlyArea" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Quick-pay modal -->
+<div id="payModal" class="modalOverlay">
+  <div class="modalBox">
+    <div class="sectionTitle">قبض / تسديد</div>
+    <div id="payInfo" class="muted" style="font-size:13px;margin-bottom:6px"></div>
+    <label>المبلغ (قابل للتعديل)</label><input id="payAmount" type="number" step="0.01"/>
+    <label>تاريخ الدفعة</label><input id="payDate" type="date"/>
+    <label>الحساب</label><select id="payAccount"></select>
+    <label>ملاحظة</label><input id="payNote"/>
+    <div class="btnRow"><button class="btn solid" onclick="savePay()">حفظ القبض</button><button class="btn" onclick="closePay()">إلغاء</button></div>
+  </div>
+</div>
+
+<script>
+/* ===================== SEED (بيانات النظام من Notion) ===================== */
+const SEED = {
+  accounts:[{key:"acc_mahmoud",name:"محفظة محمود حلس",opening:0},{key:"acc_amin",name:"حساب بنكي امين شحيبر",opening:0}],
+  people:[
+    {key:"p1",name:"أبو عمر الشرفا"},{key:"p2",name:"حامد صوان"},{key:"p3",name:"حاصل مرتجى"},
+    {key:"p4",name:"ابو زهير الشرفا"},{key:"p5",name:"أبو أسامة"},{key:"p6",name:"حاصل الإشارة"},
+    {key:"p7",name:"أبو محمد النخالة"},{key:"p8",name:"أبو يوسف نصر الثالث"},{key:"p9",name:"أبو يوسف نصر الخامس"},
+    {key:"p10",name:"أبو مؤمن"},{key:"p11",name:"علاء الخطيب"},{key:"p12",name:"أمين شحيبر"},
+    {key:"p13",name:"أبو المجد"},{key:"p14",name:"حازم صوان"},{key:"p15",name:"أبو رامي عياد"},
+    {key:"p16",name:"عبد صيام"},{key:"p17",name:"أبو هيثم"},{key:"p18",name:"أبو محمد أبو عصر"},{key:"p19",name:"خالد شملخ"}
+  ],
+  periods:[
+    {key:"per1",name:"فترة 19–30 مايو 2026",source:"",price:7.304,totalM3:null,start:"2026-05-19",end:"2026-05-30",note:"",paid:false},
+    {key:"per2",name:"فترة 8–18 مايو 2026",source:"مولد الخدمة العامة",price:5.03,totalM3:81433,start:"2026-05-08",end:"2026-05-18",note:"350 سعر سولار و 60 لصالح مولد البابا",paid:true},
+    {key:"per3",name:"02–07 مايو 2026",source:"مولد الخدمة العامة",price:9.76,totalM3:35842,start:"2026-05-02",end:"2026-05-07",note:"محسوب تقريبًا من الفاتورة 350₪ ÷ إجمالي الاستهلاك 35842",paid:true}
+  ],
+  readings:[
+    ["p14","per1",56810,57370,7.304,"2026-05-30"],["p16","per3",68433,69413,9.76,"2026-05-02"],
+    ["p5","per3",159053,160870,9.76,"2026-05-02"],["p19","per3",120191,120661,9.76,"2026-05-02"],
+    ["p14","per3",55934,56145,9.76,"2026-05-02"],["p4","per2",480257,494440,5.03,"2026-05-18"],
+    ["p6","per3",60172,60860,9.76,"2026-05-02"],["p8","per2",464584,480050,5.03,"2026-05-18"],
+    ["p2","per1",60390,61690,7.304,"2026-05-30"],["p9","per2",260604,267240,5.03,"2026-05-18"],
+    ["p1","per1",129850,132010,7.304,"2026-05-30"],["p1","per2",127693,129850,5.03,"2026-05-18"],
+    ["p3","per1",13610,13870,7.304,"2026-05-30"],["p18","per3",240547,244414,9.76,"2026-05-02"],
+    ["p4","per1",494440,502960,7.304,"2026-05-30"],["p13","per2",136204,139970,5.03,"2026-05-18"],
+    ["p7","per3",111941,112886,9.76,"2026-05-02"],["p10","per1",111530,114310,7.304,"2026-05-30"],
+    ["p10","per3",108145,109286,9.76,"2026-05-02"],["p16","per1",71570,73730,7.304,"2026-05-30"],
+    ["p13","per1",139970,144240,7.304,"2026-05-30"],["p9","per3",257858,260604,9.76,"2026-05-02"],
+    ["p9","per1",267240,276490,7.304,"2026-05-30"],["p2","per3",58591,59152,9.76,"2026-05-02"],
+    ["p10","per2",109286,111530,5.03,"2026-05-18"],["p12","per2",203790,208410,5.03,"2026-05-18"],
+    ["p5","per2",160870,164650,5.03,"2026-05-18"],["p12","per3",201148,203790,9.76,"2026-05-02"],
+    ["p5","per1",164650,169480,7.304,"2026-05-30"],["p19","per2",120661,122230,5.03,"2026-05-18"],
+    ["p6","per1",63390,65500,7.304,"2026-05-30"],["p2","per2",59152,60390,5.03,"2026-05-18"],
+    ["p11","per2",14745,15940,5.03,"2026-05-18"],["p17","per1",180730,185650,7.304,"2026-05-30"],
+    ["p17","per3",174068,176605,9.76,"2026-05-02"],["p12","per1",208410,213270,7.304,"2026-05-30"],
+    ["p16","per2",69413,71570,5.03,"2026-05-18"],["p18","per1",251720,259220,7.304,"2026-05-30"],
+    ["p8","per1",480050,495660,7.304,"2026-05-30"],["p19","per1",122230,125050,7.304,"2026-05-30"],
+    ["p3","per3",12975,13235,9.76,"2026-05-02"],["p3","per2",13235,13610,5.03,"2026-05-18"],
+    ["p4","per3",476811,480257,9.76,"2026-05-02"],["p17","per2",176605,180730,5.03,"2026-05-18"],
+    ["p18","per2",244411,251720,5.03,"2026-05-18"],["p15","per2",127286,132470,5.03,"2026-05-18"],
+    ["p7","per1",115170,117320,7.304,"2026-05-30"],["p11","per1",15940,16230,7.304,"2026-05-30"],
+    ["p6","per2",60860,63390,5.03,"2026-05-18"],["p15","per3",124937,127286,9.76,"2026-05-02"],
+    ["p13","per3",134520,136204,9.76,"2026-05-02"],["p7","per2",112886,115170,5.03,"2026-05-18"],
+    ["p8","per3",456156,464584,9.76,"2026-05-02"],["p1","per3",126623,127693,9.76,"2026-05-02"],
+    ["p14","per2",56195,56810,5.03,"2026-05-18"],["p15","per1",132470,139080,7.304,"2026-05-30"]
+  ],
+  incomes:[
+    ["2026-05-19","p17","acc_amin",21,"تحصيلات ماء","أبو هيثم — البنا"],
+    ["2026-05-19","p11","acc_amin",11,"تحصيلات ماء","علاء الحلاق"],
+    ["2026-05-19","p1","acc_amin",11,"تحصيلات ماء","أبو عمر الشرفا"],
+    ["2026-05-19","p8","acc_amin",77,"تحصيلات ماء","حسين نصر — الثالث"],
+    ["2026-05-19","p9","acc_amin",33,"تحصيلات ماء","حسين نصر — الخامس"],
+    ["2026-05-19","p13","acc_amin",19,"تحصيلات ماء","أبو المجد"],
+    ["2026-05-19","p16","acc_amin",11,"تحصيلات ماء","صيام"],
+    ["2026-05-19","p18","acc_amin",37,"تحصيلات ماء","أبو عصر"],
+    ["2026-05-19","p5","acc_amin",19,"تحصيلات ماء","أبو أسامة"],
+    ["2026-05-20","p7","acc_amin",11,"تحصيلات ماء","أبو محمد النخالة — مياه"],
+    ["2026-05-20","p15","acc_amin",23,"تحصيلات ماء","أبو رامي عياد"],
+    ["2026-05-20","p6","acc_amin",13,"تحصيلات ماء","حاصل الإشارة — مياه"],
+    ["2026-05-20","p12","acc_amin",23,"تحصيلات ماء","أمين شحيبر — مياه"],
+    ["2026-05-20","p14","acc_amin",3,"تحصيلات ماء","حازم صوان — ثمن مياه"],
+    ["2026-05-20","p2","acc_amin",6,"تحصيلات ماء","حامد صوان — ثمن مياه"],
+    ["2026-05-21","p4","acc_amin",71,"تحصيلات ماء","الشرفا — مياه"],
+    ["2026-05-21","p19","acc_mahmoud",8,"تحصيلات ماء","شملخ"],
+    ["2026-05-20","p5","acc_amin",61,"تسديد ديون سابق","أبو أسامة — تحويل مديونية قديمة"],
+    ["2026-05-21","p4","acc_amin",50,"خدمات","الشرفا — خدمات شهر 6 مقدمًا"]
+  ],
+  expenses:[
+    ["2026-05-11","acc_mahmoud",15,"مشتريات","قشاطة"],["2026-05-10","acc_mahmoud",78,"مشتريات","منظفات"],
+    ["2026-05-12","acc_mahmoud",2,"مشتريات","طباعة"],["2026-05-15","acc_mahmoud",850,"اجرة حارس",""],
+    ["2026-05-09","acc_mahmoud",350,"سولار لصالح الخدمة","سعر اللتر 35"],["2026-05-20",null,2,"مشتريات","طباعة"],
+    ["2026-05-20","acc_amin",335,"سولار لصالح الخدمة","سولار"]
+  ],
+  services:[
+    {label:"خدمات شهر مايو 2026",amount:50,date:"2026-05-01"}
+  ]
+};
+
+/* ===================== STORAGE ===================== */
+/* بيانات النظام (مستوردة من النسخة الاحتياطية) — تُحمَّل تلقائيًا عند أول فتح */
+const SEED_BACKUP = {
+  "meta":{"createdAt":"2026-06-13T14:31:07.851Z"},
+  "people":[
+    {"id":"PER-92e10c1","name":"أبو عمر الشرفا","notes":""},
+    {"id":"PER-99aa3e5","name":"حامد صوان","notes":""},
+    {"id":"PER-e58125b","name":"حاصل مرتجى","notes":""},
+    {"id":"PER-b913b35","name":"ابو زهير الشرفا","notes":""},
+    {"id":"PER-f8a44a9","name":"أبو أسامة","notes":"","oldDebt":61},
+    {"id":"PER-499bd5d","name":"حاصل الإشارة","notes":""},
+    {"id":"PER-60f10e2","name":"أبو محمد النخالة","notes":""},
+    {"id":"PER-35a2073","name":"أبو يوسف نصر الثالث","notes":""},
+    {"id":"PER-f0862c2","name":"أبو يوسف نصر الخامس","notes":""},
+    {"id":"PER-fa03e17","name":"أبو مؤمن","notes":""},
+    {"id":"PER-31af6fc","name":"علاء الخطيب","notes":"","oldDebt":265},
+    {"id":"PER-28fa145","name":"أمين شحيبر","notes":""},
+    {"id":"PER-0af6545","name":"أبو المجد","notes":"","oldDebt":43},
+    {"id":"PER-14dd61a","name":"حازم صوان","notes":""},
+    {"id":"PER-11d9c7e","name":"أبو رامي عياد","notes":""},
+    {"id":"PER-2ece0f6","name":"عبد صيام","notes":""},
+    {"id":"PER-e0ac7f8","name":"أبو هيثم","notes":""},
+    {"id":"PER-ce05484","name":"أبو محمد أبو عصر","notes":""},
+    {"id":"PER-2b83168","name":"خالد شملخ","notes":"","oldDebt":11}
+  ],
+  "periods":[
+    {"id":"PD-c06841d","name":"فترة 19–30 مايو 2026","source":"","start":"2026-05-19","end":"2026-05-30","totalM3":null,"pricePerM3":7.304,"note":"","paid":false},
+    {"id":"PD-7421470","name":"فترة 8–18 مايو 2026","source":"مولد الخدمة العامة","start":"2026-05-08","end":"2026-05-18","totalM3":81433,"pricePerM3":5.03,"note":"350 سعر سولار و 60 لصالح مولد البابا","paid":true},
+    {"id":"PD-645d556","name":"02–07 مايو 2026","source":"مولد الخدمة العامة","start":"2026-05-02","end":"2026-05-07","totalM3":35842,"pricePerM3":9.76,"note":"محسوب تقريبًا من الفاتورة 350₪ ÷ إجمالي الاستهلاك 35842","paid":true},
+    {"id":"PD-jul0110","name":"فترة 1–10 يوليو 2026","source":"ابو يوسف نصر","start":"2026-07-01","end":"2026-07-10","totalM3":70.08,"pricePerM3":7,"note":"مصدر المياه: ابو يوسف نصر — سعر الكوب 7₪","paid":false}
+  ],
+  "accounts":[
+    {"id":"ACC-3bf569e","name":"محفظة محمود حلس","opening":0},
+    {"id":"ACC-a4ed968","name":"حساب بنكي امين شحيبر","opening":0}
+  ],
+  "readings":[
+    {"id":"RD-bf060d6","personId":"PER-14dd61a","periodId":"PD-c06841d","prev":56810,"curr":57370,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-3b49554","personId":"PER-2ece0f6","periodId":"PD-645d556","prev":68433,"curr":69413,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-3a4b4b8","personId":"PER-f8a44a9","periodId":"PD-645d556","prev":159053,"curr":160870,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-49553a5","personId":"PER-2b83168","periodId":"PD-645d556","prev":120191,"curr":120661,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-6f93024","personId":"PER-14dd61a","periodId":"PD-645d556","prev":55934,"curr":56145,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-e2840b8","personId":"PER-b913b35","periodId":"PD-7421470","prev":480257,"curr":494440,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-fc7cbed","personId":"PER-499bd5d","periodId":"PD-645d556","prev":60172,"curr":60860,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-c7e5d8a","personId":"PER-35a2073","periodId":"PD-7421470","prev":464584,"curr":480050,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-90a76b9","personId":"PER-99aa3e5","periodId":"PD-c06841d","prev":60390,"curr":61690,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-76357ae","personId":"PER-f0862c2","periodId":"PD-7421470","prev":260604,"curr":267240,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-2417ef8","personId":"PER-92e10c1","periodId":"PD-c06841d","prev":129850,"curr":132010,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-943f23d","personId":"PER-92e10c1","periodId":"PD-7421470","prev":127693,"curr":129850,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-48bf23b","personId":"PER-e58125b","periodId":"PD-c06841d","prev":13610,"curr":13870,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-8375c26","personId":"PER-ce05484","periodId":"PD-645d556","prev":240547,"curr":244414,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-8db39f5","personId":"PER-b913b35","periodId":"PD-c06841d","prev":494440,"curr":502960,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-a4af910","personId":"PER-0af6545","periodId":"PD-7421470","prev":136204,"curr":139970,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-78a6c8b","personId":"PER-60f10e2","periodId":"PD-645d556","prev":111941,"curr":112886,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-241824a","personId":"PER-fa03e17","periodId":"PD-c06841d","prev":111530,"curr":114310,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-8a59a9c","personId":"PER-fa03e17","periodId":"PD-645d556","prev":108145,"curr":109286,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-cd51acd","personId":"PER-2ece0f6","periodId":"PD-c06841d","prev":71570,"curr":73730,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-b313f8e","personId":"PER-0af6545","periodId":"PD-c06841d","prev":139970,"curr":144240,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-2836f08","personId":"PER-f0862c2","periodId":"PD-645d556","prev":257858,"curr":260604,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-16a88a5","personId":"PER-f0862c2","periodId":"PD-c06841d","prev":267240,"curr":276490,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-e9ee9e0","personId":"PER-99aa3e5","periodId":"PD-645d556","prev":58591,"curr":59152,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-31eb45c","personId":"PER-fa03e17","periodId":"PD-7421470","prev":109286,"curr":111530,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-bd639d2","personId":"PER-28fa145","periodId":"PD-7421470","prev":203790,"curr":208410,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-d4e18c6","personId":"PER-f8a44a9","periodId":"PD-7421470","prev":160870,"curr":164650,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-82237cd","personId":"PER-28fa145","periodId":"PD-645d556","prev":201148,"curr":203790,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-5269f0a","personId":"PER-f8a44a9","periodId":"PD-c06841d","prev":164650,"curr":169480,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-78c24d5","personId":"PER-2b83168","periodId":"PD-7421470","prev":120661,"curr":122230,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-149d241","personId":"PER-499bd5d","periodId":"PD-c06841d","prev":63390,"curr":65500,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-d926cb8","personId":"PER-99aa3e5","periodId":"PD-7421470","prev":59152,"curr":60390,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-b7acfbf","personId":"PER-31af6fc","periodId":"PD-7421470","prev":14745,"curr":15940,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-ff9ec3b","personId":"PER-e0ac7f8","periodId":"PD-c06841d","prev":180730,"curr":185650,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-9296c96","personId":"PER-e0ac7f8","periodId":"PD-645d556","prev":174068,"curr":176605,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-b98e7f6","personId":"PER-28fa145","periodId":"PD-c06841d","prev":208410,"curr":213270,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-ed19d18","personId":"PER-2ece0f6","periodId":"PD-7421470","prev":69413,"curr":71570,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-61da21d","personId":"PER-ce05484","periodId":"PD-c06841d","prev":251720,"curr":259220,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-14750d3","personId":"PER-35a2073","periodId":"PD-c06841d","prev":480050,"curr":495660,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-e8665d7","personId":"PER-2b83168","periodId":"PD-c06841d","prev":122230,"curr":125050,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-cb7fdbb","personId":"PER-e58125b","periodId":"PD-645d556","prev":12975,"curr":13235,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-7793aae","personId":"PER-e58125b","periodId":"PD-7421470","prev":13235,"curr":13610,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-3cbd272","personId":"PER-b913b35","periodId":"PD-645d556","prev":476811,"curr":480257,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-30ab353","personId":"PER-e0ac7f8","periodId":"PD-7421470","prev":176605,"curr":180730,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-157e22b","personId":"PER-ce05484","periodId":"PD-7421470","prev":244411,"curr":251720,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-c9dcb9d","personId":"PER-11d9c7e","periodId":"PD-7421470","prev":127286,"curr":132470,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-28f8f0e","personId":"PER-60f10e2","periodId":"PD-c06841d","prev":115170,"curr":117320,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-afacc31","personId":"PER-31af6fc","periodId":"PD-c06841d","prev":15940,"curr":16230,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-2772edc","personId":"PER-499bd5d","periodId":"PD-7421470","prev":60860,"curr":63390,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-cd90f6e","personId":"PER-11d9c7e","periodId":"PD-645d556","prev":124937,"curr":127286,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-0999454","personId":"PER-0af6545","periodId":"PD-645d556","prev":134520,"curr":136204,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-add53d2","personId":"PER-60f10e2","periodId":"PD-7421470","prev":112886,"curr":115170,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-18044ae","personId":"PER-35a2073","periodId":"PD-645d556","prev":456156,"curr":464584,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-b122229","personId":"PER-92e10c1","periodId":"PD-645d556","prev":126623,"curr":127693,"price":9.76,"date":"2026-05-02"},
+    {"id":"RD-1ea5a33","personId":"PER-14dd61a","periodId":"PD-7421470","prev":56195,"curr":56810,"price":5.03,"date":"2026-05-18"},
+    {"id":"RD-b84088f","personId":"PER-11d9c7e","periodId":"PD-c06841d","prev":132470,"curr":139080,"price":7.304,"date":"2026-05-30"},
+    {"id":"RD-jul01","personId":"PER-92e10c1","periodId":"PD-jul0110","prev":132010,"curr":134160,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul02","personId":"PER-99aa3e5","periodId":"PD-jul0110","prev":61690,"curr":63150,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul03","personId":"PER-e58125b","periodId":"PD-jul0110","prev":13870,"curr":14240,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul04","personId":"PER-b913b35","periodId":"PD-jul0110","prev":502960,"curr":508430,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul05","personId":"PER-f8a44a9","periodId":"PD-jul0110","prev":169480,"curr":174090,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul06","personId":"PER-499bd5d","periodId":"PD-jul0110","prev":65500,"curr":67160,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul07","personId":"PER-60f10e2","periodId":"PD-jul0110","prev":117320,"curr":119510,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul08","personId":"PER-35a2073","periodId":"PD-jul0110","prev":495660,"curr":508790,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul09","personId":"PER-f0862c2","periodId":"PD-jul0110","prev":276490,"curr":283920,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul10","personId":"PER-fa03e17","periodId":"PD-jul0110","prev":114310,"curr":116990,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul11","personId":"PER-31af6fc","periodId":"PD-jul0110","prev":16230,"curr":16501,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul12","personId":"PER-28fa145","periodId":"PD-jul0110","prev":213270,"curr":218300,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul13","personId":"PER-0af6545","periodId":"PD-jul0110","prev":144240,"curr":147490,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul14","personId":"PER-14dd61a","periodId":"PD-jul0110","prev":57370,"curr":57910,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul15","personId":"PER-11d9c7e","periodId":"PD-jul0110","prev":139080,"curr":144740,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul16","personId":"PER-2ece0f6","periodId":"PD-jul0110","prev":73730,"curr":75510,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul17","personId":"PER-e0ac7f8","periodId":"PD-jul0110","prev":185650,"curr":189310,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul18","personId":"PER-ce05484","periodId":"PD-jul0110","prev":259220,"curr":266430,"price":7,"date":"2026-07-10"},
+    {"id":"RD-jul19","personId":"PER-2b83168","periodId":"PD-jul0110","prev":125050,"curr":126850,"price":7,"date":"2026-07-10"}
+  ],
+  "incomes":[
+    {"id":"IN-079cc12","date":"2026-05-19","personId":"PER-e0ac7f8","accountId":"ACC-a4ed968","amount":21,"category":"تحصيلات ماء","note":"أبو هيثم — البنا"},
+    {"id":"IN-bd345af","date":"2026-05-19","personId":"PER-92e10c1","accountId":"ACC-a4ed968","amount":11,"category":"تحصيلات ماء","note":"أبو عمر الشرفا"},
+    {"id":"IN-724f35e","date":"2026-05-19","personId":"PER-35a2073","accountId":"ACC-a4ed968","amount":77,"category":"تحصيلات ماء","note":"حسين نصر — الثالث"},
+    {"id":"IN-c5e3222","date":"2026-05-19","personId":"PER-f0862c2","accountId":"ACC-a4ed968","amount":33,"category":"تحصيلات ماء","note":"حسين نصر — الخامس"},
+    {"id":"IN-5daa9f0","date":"2026-05-19","personId":"PER-0af6545","accountId":"ACC-a4ed968","amount":19,"category":"تحصيلات ماء","note":"أبو المجد"},
+    {"id":"IN-a13f38c","date":"2026-05-19","personId":"PER-2ece0f6","accountId":"ACC-a4ed968","amount":11,"category":"تحصيلات ماء","note":"صيام"},
+    {"id":"IN-e668f12","date":"2026-05-19","personId":"PER-ce05484","accountId":"ACC-a4ed968","amount":37,"category":"تحصيلات ماء","note":"أبو عصر"},
+    {"id":"IN-fbe59e7","date":"2026-05-19","personId":"PER-f8a44a9","accountId":"ACC-a4ed968","amount":19,"category":"تحصيلات ماء","note":"أبو أسامة"},
+    {"id":"IN-58d46d8","date":"2026-05-20","personId":"PER-60f10e2","accountId":"ACC-a4ed968","amount":11,"category":"تحصيلات ماء","note":"أبو محمد النخالة — مياه"},
+    {"id":"IN-441517d","date":"2026-05-20","personId":"PER-11d9c7e","accountId":"ACC-a4ed968","amount":23,"category":"تحصيلات ماء","note":"أبو رامي عياد"},
+    {"id":"IN-f0c315e","date":"2026-05-20","personId":"PER-499bd5d","accountId":"ACC-a4ed968","amount":13,"category":"تحصيلات ماء","note":"حاصل الإشارة — مياه"},
+    {"id":"IN-6b25be8","date":"2026-05-20","personId":"PER-28fa145","accountId":"ACC-a4ed968","amount":23,"category":"تحصيلات ماء","note":"أمين شحيبر — مياه"},
+    {"id":"IN-aaa1596","date":"2026-05-20","personId":"PER-14dd61a","accountId":"ACC-a4ed968","amount":3,"category":"تحصيلات ماء","note":"حازم صوان — ثمن مياه"},
+    {"id":"IN-ee17c96","date":"2026-05-20","personId":"PER-99aa3e5","accountId":"ACC-a4ed968","amount":6,"category":"تحصيلات ماء","note":"حامد صوان — ثمن مياه"},
+    {"id":"IN-77dcfd6","date":"2026-05-21","personId":"PER-b913b35","accountId":"ACC-a4ed968","amount":71,"category":"تحصيلات ماء","note":"الشرفا — مياه"},
+    {"id":"IN-a836ff4","date":"2026-05-21","personId":"PER-2b83168","accountId":"ACC-3bf569e","amount":8,"category":"تحصيلات ماء","note":"شملخ"},
+    {"id":"IN-32f02df","date":"2026-05-20","personId":"PER-f8a44a9","accountId":"ACC-a4ed968","amount":61,"category":"تسديد ديون سابق","note":"أبو أسامة — تحويل مديونية قديمة"},
+    {"id":"IN-bb915ad","date":"2026-05-21","personId":"PER-b913b35","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"الشرفا — خدمات شهر 6 مقدمًا"},
+    {"id":"IN-7391593","date":"2026-05-10","personId":"PER-f8a44a9","accountId":"ACC-3bf569e","amount":18,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-3dd41e4","date":"2026-05-13","personId":"PER-f8a44a9","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-f944e09","date":"2026-06-01","personId":"PER-f8a44a9","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-16f72c1","date":"2026-06-01","personId":"PER-f8a44a9","accountId":"ACC-a4ed968","amount":35,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-4ab2464","date":"2026-05-13","personId":"PER-0af6545","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-209a373","date":"2026-06-01","personId":"PER-0af6545","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-abf5b85","date":"2026-05-13","personId":"PER-0af6545","accountId":"ACC-3bf569e","amount":16,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-08ab4cf","date":"2026-06-01","personId":"PER-0af6545","accountId":"ACC-a4ed968","amount":31,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-81d1a1b","date":"2026-05-13","personId":"PER-11d9c7e","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-d1cbcb4","date":"2026-06-01","personId":"PER-11d9c7e","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-57c547e","date":"2026-05-13","personId":"PER-11d9c7e","accountId":"ACC-3bf569e","amount":23,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-16a6431","date":"2026-06-01","personId":"PER-11d9c7e","accountId":"ACC-a4ed968","amount":51,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-9e29b83","date":"2026-05-10","personId":"PER-b913b35","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-99128e6","date":"2026-05-13","personId":"PER-b913b35","accountId":"ACC-3bf569e","amount":34,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-c765ba9","date":"2026-06-01","personId":"PER-b913b35","accountId":"ACC-a4ed968","amount":62,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-706ac47","date":"2026-05-10","personId":"PER-92e10c1","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة-حرب"},
+    {"id":"IN-dfe3cdc","date":"2026-05-10","personId":"PER-92e10c1","accountId":"ACC-3bf569e","amount":26,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه-حرب"},
+    {"id":"IN-3df197b","date":"2026-06-01","personId":"PER-92e10c1","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-9c12823","date":"2026-05-13","personId":"PER-fa03e17","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-5d0349f","date":"2026-06-13","personId":"PER-fa03e17","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-0c2b40d","date":"2026-05-13","personId":"PER-fa03e17","accountId":"ACC-3bf569e","amount":11,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-4cf5d54","date":"2026-06-01","personId":"PER-fa03e17","accountId":"ACC-a4ed968","amount":20,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-0b1455b","date":"2026-05-20","personId":"PER-fa03e17","accountId":"ACC-a4ed968","amount":11,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-c3ff063","date":"2026-05-13","personId":"PER-ce05484","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-7eba199","date":"2026-06-10","personId":"PER-ce05484","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-0ce2296","date":"2026-06-10","personId":"PER-ce05484","accountId":"ACC-a4ed968","amount":50,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-75d83c0","date":"2026-05-13","personId":"PER-ce05484","accountId":"ACC-3bf569e","amount":38,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-4b7b5cd","date":"2026-05-13","personId":"PER-60f10e2","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-e995037","date":"2026-06-10","personId":"PER-60f10e2","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-abe8fbd","date":"2026-05-13","personId":"PER-60f10e2","accountId":"ACC-3bf569e","amount":9,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-7f88757","date":"2026-06-10","personId":"PER-60f10e2","accountId":"ACC-a4ed968","amount":16,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-7c28a8b","date":"2026-05-13","personId":"PER-e0ac7f8","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-1209b1e","date":"2026-06-01","personId":"PER-e0ac7f8","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-5a6f803","date":"2026-05-13","personId":"PER-e0ac7f8","accountId":"ACC-3bf569e","amount":25,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-3c6119b","date":"2026-06-01","personId":"PER-e0ac7f8","accountId":"ACC-a4ed968","amount":36,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-703b58f","date":"2026-05-13","personId":"PER-35a2073","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-24549fe","date":"2026-05-13","personId":"PER-35a2073","accountId":"ACC-3bf569e","amount":82,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-4865cec","date":"2026-05-13","personId":"PER-f0862c2","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-ad4296c","date":"2026-05-13","personId":"PER-f0862c2","accountId":"ACC-3bf569e","amount":27,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-e7eab10","date":"2026-05-13","personId":"PER-28fa145","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-4368f40","date":"2026-06-10","personId":"PER-28fa145","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-09c5d29","date":"2026-05-13","personId":"PER-28fa145","accountId":"ACC-3bf569e","amount":26,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-b547b41","date":"2026-06-10","personId":"PER-28fa145","accountId":"ACC-a4ed968","amount":35,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-5db1c66","date":"2026-05-13","personId":"PER-14dd61a","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-ef539c7","date":"2026-05-13","personId":"PER-14dd61a","accountId":"ACC-3bf569e","amount":2,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-b14009c","date":"2026-06-10","personId":"PER-499bd5d","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-3f51686","date":"2026-05-13","personId":"PER-499bd5d","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-7846412","date":"2026-05-13","personId":"PER-499bd5d","accountId":"ACC-3bf569e","amount":7,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-9c7f3b5","date":"2026-06-10","personId":"PER-499bd5d","accountId":"ACC-a4ed968","amount":15,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-a2fad10","date":"2026-05-13","personId":"PER-e58125b","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-a8834f4","date":"2026-06-10","personId":"PER-e58125b","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-b34230a","date":"2026-05-13","personId":"PER-e58125b","accountId":"ACC-3bf569e","amount":3,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-286e9bb","date":"2026-06-10","personId":"PER-e58125b","accountId":"ACC-a4ed968","amount":4,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-81bf500","date":"2026-05-13","personId":"PER-99aa3e5","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-0d7c428","date":"2026-05-13","personId":"PER-99aa3e5","accountId":"ACC-3bf569e","amount":5,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-4cf0be7","date":"2026-05-13","personId":"PER-2b83168","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-b9209d4","date":"2026-05-13","personId":"PER-2b83168","accountId":"ACC-3bf569e","amount":5,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-fa23cb1","date":"2026-05-13","personId":"PER-2ece0f6","accountId":"ACC-3bf569e","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-8e2bcd9","date":"2026-06-10","personId":"PER-2ece0f6","accountId":"ACC-a4ed968","amount":50,"category":"خدمات","note":"تسديد خدمات العمارة"},
+    {"id":"IN-b5fdcfb","date":"2026-05-13","personId":"PER-2ece0f6","accountId":"ACC-3bf569e","amount":10,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-7e7b586","date":"2026-06-10","personId":"PER-2ece0f6","accountId":"ACC-a4ed968","amount":16,"category":"تحصيلات ماء","note":"تسديد فاتورة مياه"},
+    {"id":"IN-e58e2ad","date":"2026-06-10","personId":"PER-31af6fc","accountId":"ACC-a4ed968","amount":200,"category":"اخرى","note":"دفعةالجرجاوي"},
+    {"id":"IN-adf6364","date":"2026-05-10","personId":"PER-0af6545","accountId":"ACC-3bf569e","amount":43,"category":"تسديد ديون سابق","note":""},
+    {"id":"IN-318f961","date":"2026-05-10","personId":"PER-2b83168","accountId":"ACC-3bf569e","amount":11,"category":"تسديد ديون سابق","note":""},
+    {"id":"IN-openbox","date":"2026-05-01","personId":null,"accountId":"ACC-a4ed968","amount":520,"category":"اخرى","note":"رصيد صندوق العمارة قبل بداية الإدارة — حوالة بنكية (تحويل آخر رصيد)"}
+  ],
+  "expenses":[
+    {"id":"EX-82d9e83","date":"2026-05-11","accountId":"ACC-3bf569e","amount":15,"category":"مشتريات","note":"قشاطة"},
+    {"id":"EX-1403416","date":"2026-05-10","accountId":"ACC-3bf569e","amount":78,"category":"مشتريات","note":"منظفات"},
+    {"id":"EX-21bea91","date":"2026-05-12","accountId":"ACC-3bf569e","amount":2,"category":"مشتريات","note":"طباعة"},
+    {"id":"EX-f17302c","date":"2026-05-15","accountId":"ACC-3bf569e","amount":850,"category":"اجرة حارس","note":""},
+    {"id":"EX-04b4de6","date":"2026-05-09","accountId":"ACC-3bf569e","amount":350,"category":"سولار لصالح الخدمة","note":"سعر اللتر 35"},
+    {"id":"EX-07be762","date":"2026-05-20","accountId":null,"amount":2,"category":"مشتريات","note":"طباعة"},
+    {"id":"EX-6f417b3","date":"2026-05-20","accountId":"ACC-a4ed968","amount":335,"category":"سولار لصالح الخدمة","note":"سولار"}
+  ],
+  "services":[
+    {"id":"SV-4057f1a","label":"خدمات شهر مايو 2026","amount":50,"date":"2026-05-01"},
+    {"id":"SV-1377f27","label":"خدمات شهر 6","amount":50,"date":"2026-06-01"}
+  ]
+};
+const KEY="building_mgmt_v5";
+const NOW=()=>new Date().toISOString();
+const uid=p=>p+"-"+Math.random().toString(16).slice(2,9);
+const defaultData=()=>({meta:{createdAt:NOW()},people:[],periods:[],accounts:[],readings:[],incomes:[],expenses:[],services:[],bills:[]});
+function buildSeed(){
+  const d=JSON.parse(JSON.stringify(SEED_BACKUP));
+  if(!d.meta)d.meta={createdAt:NOW()};
+  ["people","periods","accounts","readings","incomes","expenses","services","bills"].forEach(k=>{if(!Array.isArray(d[k]))d[k]=[];});
+  return d;
+}
+function migrate(d){if(d){let changed=false;if(Array.isArray(d.periods)){d.periods.forEach(p=>{if(p.paid===undefined){p.paid=(p.start!=="2026-05-19");changed=true;}});}if(!Array.isArray(d.services)){d.services=[{id:uid("SV"),label:"خدمات شهر مايو 2026",amount:50,date:"2026-05-01",createdAt:NOW()}];changed=true;}if(!Array.isArray(d.bills)){d.bills=[];changed=true;}if(changed)save(d);}return d;}
+function load(){const raw=localStorage.getItem(KEY);if(!raw){const s=buildSeed();save(s);return s;}try{return migrate(JSON.parse(raw));}catch(e){return buildSeed();}}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d));}
+let db=load();
+
+/* ===================== HELPERS ===================== */
+const byId=(a,id)=>a.find(x=>x.id===id);
+const esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const fmt=n=>Number(n||0).toLocaleString("en-US",{maximumFractionDigits:2});
+const fmtN0=n=>Number(n||0).toLocaleString("en-US",{maximumFractionDigits:0});
+const fmt3=n=>Number(n||0).toFixed(3);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtDMY=s=>{if(!s)return"";const p=String(s).split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:s;};
+const consumption=r=>(Number(r.curr||0)-Number(r.prev||0))/1000;
+const readingTotal=r=>Math.round((r.price||0)*consumption(r));
+
+function setTab(n){
+  document.querySelectorAll(".view").forEach(v=>v.style.display="none");
+  document.getElementById("view-"+n).style.display="";
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  const t=document.getElementById("tab-"+n);if(t)t.classList.add("active");
+  document.querySelectorAll(".navGroup").forEach(g=>g.classList.toggle("hasActive",!!g.querySelector("button.active")));
+  refresh();
+  if(n==="prints") renderPrintPreview();
+  if(n==="monthly") renderMonthlyPreview();
+}
+
+/* ===================== DEBT LOGIC ===================== */
+function personDue(pid,per){return db.readings.filter(r=>r.personId===pid&&(!per||r.periodId===per)).reduce((s,r)=>s+readingTotal(r),0);}
+function personPaid(pid){return db.incomes.filter(x=>x.personId===pid).reduce((s,x)=>s+Number(x.amount||0),0);}
+function personM3(pid,per){return db.readings.filter(r=>r.personId===pid&&(!per||r.periodId===per)).reduce((s,r)=>s+consumption(r),0);}
+function servicesDue(){return (db.services||[]).reduce((s,x)=>s+Number(x.amount||0),0);}
+function personWaterPaid(pid){return db.incomes.filter(x=>x.personId===pid&&x.category==="تحصيلات ماء").reduce((s,x)=>s+Number(x.amount||0),0);}
+function personServicesPaid(pid){return db.incomes.filter(x=>x.personId===pid&&x.category==="خدمات").reduce((s,x)=>s+Number(x.amount||0),0);}
+function personIncomeTotal(pid){return db.incomes.filter(x=>x.personId===pid).reduce((s,x)=>s+Number(x.amount||0),0);}
+
+/* ===================== PEOPLE ===================== */
+let editingPersonId=null;
+function personOldDebt(pid){return Number(byId(db.people,pid)?.oldDebt||0);}
+function personOldDebtPaid(pid){return db.incomes.filter(x=>x.personId===pid&&x.category==="تسديد ديون سابق").reduce((s,x)=>s+Number(x.amount||0),0);}
+function addPerson(){const n=document.getElementById("pName").value.trim();if(!n)return alert("أدخل الاسم");
+  const old=Number(document.getElementById("pOldDebt").value||0)||0;
+  if(editingPersonId){const x=byId(db.people,editingPersonId);if(x){x.name=n;x.notes=document.getElementById("pNotes").value.trim();x.oldDebt=old;}cancelEditPerson();save(db);refresh();return;}
+  db.people.push({id:uid("PER"),name:n,notes:document.getElementById("pNotes").value.trim(),oldDebt:old,createdAt:NOW()});save(db);pName.value="";pNotes.value="";document.getElementById("pOldDebt").value="0";refresh();}
+function editPerson(id){const x=byId(db.people,id);if(!x)return;editingPersonId=id;document.getElementById("pName").value=x.name||"";document.getElementById("pNotes").value=x.notes||"";document.getElementById("pOldDebt").value=x.oldDebt||0;document.getElementById("pSaveBtn").textContent="تحديث";document.getElementById("pCancelBtn").style.display="";try{document.getElementById("pName").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}}
+function cancelEditPerson(){editingPersonId=null;const b=document.getElementById("pSaveBtn");if(b)b.textContent="حفظ";const c=document.getElementById("pCancelBtn");if(c)c.style.display="none";document.getElementById("pName").value="";document.getElementById("pNotes").value="";document.getElementById("pOldDebt").value="0";}
+function goToStatement(pid){setTab('statement');const s=document.getElementById("stPerson");if(s)s.value=pid;const sp=document.getElementById("stPeriod");if(sp)sp.value="";renderStatement();try{document.getElementById("view-statement").scrollIntoView({behavior:"smooth",block:"start"});}catch(e){}}
+function delPerson(id){if(!confirm("حذف الساكن؟"))return;db.people=db.people.filter(p=>p.id!==id);save(db);refresh();}
+function renderPeople(){const q=(document.getElementById("pSearch")?.value||"").trim();const tb=document.getElementById("peopleTbody");if(!tb)return;
+  const list=db.people.filter(p=>!q||p.name.includes(q)).sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+  tb.innerHTML=list.map(p=>{const bal=personDue(p.id)+servicesDue()+personOldDebt(p.id)-personPaid(p.id);
+    return `<tr><td><span class="plink" onclick="goToStatement('${p.id}')">${esc(p.name)}</span>${personOldDebt(p.id)>0?' <span class="chip">دين قديم: '+fmt(personOldDebt(p.id))+'</span>':''}</td><td class="num ${bal>0.0001?'owe':'muted'}">${bal>0.0001?fmt(bal):"—"}</td><td class="muted">${esc(p.notes)}</td><td class="noprint right"><button class="btn sm" onclick="editPerson('${p.id}')">تعديل</button> <button class="btn link" onclick="delPerson('${p.id}')">حذف</button></td></tr>`;
+  }).join("")||`<tr><td colspan="4" class="empty">لا يوجد سكان</td></tr>`;}
+
+/* ===================== PERIODS ===================== */
+let editingPeriodId=null;
+function addPeriod(){const n=document.getElementById("perName").value.trim();if(!n)return alert("أدخل اسم الفترة");
+  if(editingPeriodId){const x=byId(db.periods,editingPeriodId);if(x){x.name=n;x.source=perSource.value;x.start=perStart.value;x.end=perEnd.value;x.totalM3=Number(perTotal.value||0)||null;x.pricePerM3=Number(perPrice.value||0)||null;x.note=perNote.value.trim();}cancelEditPeriod();save(db);refresh();return;}
+  db.periods.push({id:uid("PD"),name:n,source:perSource.value,start:perStart.value,end:perEnd.value,totalM3:Number(perTotal.value||0)||null,pricePerM3:Number(perPrice.value||0)||null,note:perNote.value.trim(),paid:false,createdAt:NOW()});save(db);
+  ["perName","perStart","perEnd","perTotal","perPrice","perNote"].forEach(i=>document.getElementById(i).value="");refresh();}
+function editPeriod(id){const x=byId(db.periods,id);if(!x)return;editingPeriodId=id;
+  document.getElementById("perName").value=x.name||"";document.getElementById("perSource").value=x.source||"";document.getElementById("perStart").value=x.start||"";document.getElementById("perEnd").value=x.end||"";document.getElementById("perTotal").value=x.totalM3!=null?x.totalM3:"";document.getElementById("perPrice").value=x.pricePerM3!=null?x.pricePerM3:"";document.getElementById("perNote").value=x.note||"";
+  document.getElementById("perSaveBtn").textContent="تحديث";document.getElementById("perCancelBtn").style.display="";
+  try{document.getElementById("perName").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}}
+function cancelEditPeriod(){editingPeriodId=null;const b=document.getElementById("perSaveBtn");if(b)b.textContent="حفظ";const c=document.getElementById("perCancelBtn");if(c)c.style.display="none";["perName","perStart","perEnd","perTotal","perPrice","perNote"].forEach(i=>{const el=document.getElementById(i);if(el)el.value="";});document.getElementById("perSource").value="";}
+function delPeriod(id){if(!confirm("حذف الفترة؟"))return;db.periods=db.periods.filter(p=>p.id!==id);save(db);refresh();}
+function togglePeriodPaid(id){const p=byId(db.periods,id);if(!p)return;p.paid=!p.paid;save(db);refresh();}
+function periodIsPaid(perId){const p=byId(db.periods,perId);return !!(p&&p.paid);}
+function personPaidWater(pid){return db.readings.filter(r=>r.personId===pid&&periodIsPaid(r.periodId)).reduce((s,r)=>s+readingTotal(r),0);}
+function personOutstanding(pid){return db.readings.filter(r=>r.personId===pid&&!periodIsPaid(r.periodId)).reduce((s,r)=>s+readingTotal(r),0);}
+function renderPeriods(){const tb=document.getElementById("periodsTbody");if(!tb)return;
+  const list=[...db.periods].sort((a,b)=>(b.start||"").localeCompare(a.start||""));
+  tb.innerHTML=list.map(p=>`<tr><td>${esc(p.name)}</td><td class="muted">${p.start||""} → ${p.end||""}</td><td>${p.source?'<span class="chip">'+esc(p.source)+'</span>':'—'}</td><td class="num">${p.pricePerM3!=null?fmt(p.pricePerM3):"—"}</td><td class="num">${p.totalM3!=null?fmt(p.totalM3):"—"}</td><td class="noprint"><button class="btn sm" onclick="togglePeriodPaid('${p.id}')">${p.paid?'<span style="color:#2f7a2f">مدفوعة</span>':'<span class="owe">غير مدفوعة</span>'}</button></td><td class="noprint right"><button class="btn sm" onclick="editPeriod('${p.id}')">تعديل</button> <button class="btn link" onclick="delPeriod('${p.id}')">حذف</button></td></tr>`).join("")||`<tr><td colspan="7" class="empty">لا يوجد فترات</td></tr>`;}
+
+/* ===================== READINGS ===================== */
+function rdSyncPrice(){const per=byId(db.periods,rdPeriod.value);if(per&&per.pricePerM3!=null&&!rdPrice.value)rdPrice.value=per.pricePerM3;}
+function addReading(){const pid=rdPerson.value,perid=rdPeriod.value;if(!pid)return alert("اختر الساكن");if(!perid)return alert("اختر الفترة");
+  db.readings.push({id:uid("RD"),personId:pid,periodId:perid,prev:Number(rdPrev.value||0),curr:Number(rdCurr.value||0),price:Number(rdPrice.value||0),date:rdDate.value||today(),createdAt:NOW()});save(db);
+  rdPrev.value="";rdCurr.value="";rdPrice.value="";refresh();}
+function delReading(id){if(!confirm("حذف القراءة؟"))return;db.readings=db.readings.filter(r=>r.id!==id);save(db);refresh();}
+function renderReadings(){const tb=document.getElementById("readingsTbody");if(!tb)return;const f=document.getElementById("rdFilterPeriod")?.value||"";
+  let list=[...db.readings];if(f)list=list.filter(r=>r.periodId===f);
+  list.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  tb.innerHTML=list.map(r=>`<tr><td>${esc(byId(db.people,r.personId)?.name||"—")}</td><td class="muted">${esc(byId(db.periods,r.periodId)?.name||"—")}</td><td class="num">${fmtN0(r.prev)}</td><td class="num">${fmtN0(r.curr)}</td><td class="num">${fmt3(consumption(r))}</td><td class="num">${fmt(r.price)}</td><td class="num">${fmt(readingTotal(r))}</td><td class="noprint right"><button class="btn sm" onclick="payFor('${r.id}')">قبض</button> <button class="btn link" onclick="delReading('${r.id}')">حذف</button></td></tr>`).join("")||`<tr><td colspan="8" class="empty">لا يوجد قراءات</td></tr>`;}
+
+/* ===== Payment / settlement (modal) ===== */
+let payCtx=null;
+function openPay(ctx){payCtx=ctx;
+  document.getElementById("payInfo").innerHTML=`الساكن: <strong>${esc(byId(db.people,ctx.personId)?.name||"")}</strong>${ctx.label?(" · "+esc(ctx.label)):""}`;
+  document.getElementById("payAmount").value=ctx.amount>0?ctx.amount:"";
+  document.getElementById("payDate").value=today();
+  document.getElementById("payNote").value=ctx.note||"";
+  fill(document.getElementById("payAccount"),[...db.accounts].sort((a,b)=>a.name.localeCompare(b.name,"ar")),"— حساب —");
+  document.getElementById("payModal").style.display="flex";}
+function payFor(id){const r=byId(db.readings,id);if(!r)return;const pn=byId(db.periods,r.periodId)?.name||"";openPay({personId:r.personId,category:"تحصيلات ماء",amount:readingTotal(r),note:"فاتورة مياه — "+pn,label:pn});}
+function payWater(pid){const rem=personDue(pid)-personWaterPaid(pid);openPay({personId:pid,category:"تحصيلات ماء",amount:rem>0?rem:0,note:"تسديد فاتورة مياه",label:"تسديد المياه"});}
+function payServices(pid){const rem=servicesDue()-personServicesPaid(pid);openPay({personId:pid,category:"خدمات",amount:rem>0?rem:0,note:"تسديد خدمات العمارة",label:"تسديد الخدمات"});}
+function closePay(){document.getElementById("payModal").style.display="none";payCtx=null;}
+function savePay(){if(!payCtx)return;const amt=Number(document.getElementById("payAmount").value||0);if(amt<=0)return alert("أدخل مبلغ صحيح");
+  const inc={id:uid("IN"),date:document.getElementById("payDate").value||today(),personId:payCtx.personId||null,accountId:document.getElementById("payAccount").value||null,amount:amt,category:payCtx.category||"تحصيلات ماء",note:document.getElementById("payNote").value.trim(),createdAt:NOW()};
+  db.incomes.push(inc);save(db);const wantPrint=confirm("تم حفظ الدفعة. هل تريد طباعة سند القبض؟");closePay();refresh();if(wantPrint)printReceipt(inc.id);}
+
+/* ===================== INCOME ===================== */
+let editingIncomeId=null;
+function addIncome(){const amt=Number(inAmount.value||0);if(amt<=0)return alert("أدخل مبلغ");
+  if(editingIncomeId){const x=byId(db.incomes,editingIncomeId);if(x){x.date=inDate.value||today();x.personId=inPerson.value||null;x.accountId=inAccount.value||null;x.amount=amt;x.category=inCat.value;x.note=inNote.value.trim();}cancelEditIncome();save(db);refresh();return;}
+  db.incomes.push({id:uid("IN"),date:inDate.value||today(),personId:inPerson.value||null,accountId:inAccount.value||null,amount:amt,category:inCat.value,note:inNote.value.trim(),createdAt:NOW()});save(db);inAmount.value="";inNote.value="";refresh();}
+function editIncome(id){const x=byId(db.incomes,id);if(!x)return;editingIncomeId=id;
+  document.getElementById("inDate").value=x.date||today();document.getElementById("inPerson").value=x.personId||"";document.getElementById("inAccount").value=x.accountId||"";document.getElementById("inAmount").value=x.amount;document.getElementById("inCat").value=x.category||"";document.getElementById("inNote").value=x.note||"";
+  document.getElementById("inSaveBtn").textContent="تحديث الدفعة";document.getElementById("inCancelBtn").style.display="";
+  try{document.getElementById("inAmount").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}}
+function cancelEditIncome(){editingIncomeId=null;const b=document.getElementById("inSaveBtn");if(b)b.textContent="حفظ";const c=document.getElementById("inCancelBtn");if(c)c.style.display="none";inAmount.value="";inNote.value="";}
+function delIncome(id){if(!confirm("حذف الدفعة؟"))return;db.incomes=db.incomes.filter(x=>x.id!==id);save(db);refresh();}
+function editIncomeFromStatement(id){setTab('income');editIncome(id);}
+function renderIncome(){const tb=document.getElementById("incomeTbody");if(!tb)return;const f=document.getElementById("inFilterPerson")?.value||"";const mo=document.getElementById("inFilterMonth")?.value||"";
+  let list=[...db.incomes];if(f)list=list.filter(x=>x.personId===f);if(mo)list=list.filter(x=>String(x.date||"").slice(0,7)===mo);list.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  tb.innerHTML=list.map(x=>{const who=x.personId?esc(byId(db.people,x.personId)?.name||""):esc(x.note||"—");
+    return `<tr><td class="muted">${x.date||""}</td><td><span class="chip">${esc(x.category||"")}</span></td><td>${who}</td><td class="muted">${esc(byId(db.accounts,x.accountId)?.name||"—")}</td><td class="num">${fmt(x.amount)}</td><td class="noprint right"><button class="btn sm" onclick="printReceipt('${x.id}')">سند</button> <button class="btn sm" onclick="editIncome('${x.id}')">تعديل</button> <button class="btn link" onclick="delIncome('${x.id}')">حذف</button></td></tr>`;
+  }).join("")||`<tr><td colspan="6" class="empty">لا يوجد وارد</td></tr>`;}
+
+/* ===================== EXPENSES ===================== */
+let editingExpenseId=null;
+function addExpense(){const amt=Number(exAmount.value||0);if(amt<=0)return alert("أدخل مبلغ");
+  if(editingExpenseId){const x=byId(db.expenses,editingExpenseId);if(x){x.date=exDate.value||today();x.accountId=exAccount.value||null;x.amount=amt;x.category=exCat.value;x.note=exNote.value.trim();}cancelEditExpense();save(db);refresh();return;}
+  db.expenses.push({id:uid("EX"),date:exDate.value||today(),accountId:exAccount.value||null,amount:amt,category:exCat.value,note:exNote.value.trim(),createdAt:NOW()});save(db);exAmount.value="";exNote.value="";refresh();}
+function editExpense(id){const x=byId(db.expenses,id);if(!x)return;editingExpenseId=id;
+  document.getElementById("exDate").value=x.date||today();document.getElementById("exAccount").value=x.accountId||"";document.getElementById("exAmount").value=x.amount;document.getElementById("exCat").value=x.category||"";document.getElementById("exNote").value=x.note||"";
+  document.getElementById("exSaveBtn").textContent="تحديث الحركة";document.getElementById("exCancelBtn").style.display="";
+  try{document.getElementById("exAmount").scrollIntoView({behavior:"smooth",block:"center"});}catch(e){}}
+function cancelEditExpense(){editingExpenseId=null;const b=document.getElementById("exSaveBtn");if(b)b.textContent="حفظ";const c=document.getElementById("exCancelBtn");if(c)c.style.display="none";exAmount.value="";exNote.value="";}
+function delExpense(id){if(!confirm("حذف؟"))return;db.expenses=db.expenses.filter(x=>x.id!==id);save(db);refresh();}
+function renderExpenses(){const tb=document.getElementById("expensesTbody");if(!tb)return;const f=document.getElementById("exFilterAccount")?.value||"";const mo=document.getElementById("exFilterMonth")?.value||"";
+  let list=[...db.expenses];if(f)list=list.filter(x=>x.accountId===f);if(mo)list=list.filter(x=>String(x.date||"").slice(0,7)===mo);list.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  tb.innerHTML=list.map(x=>`<tr><td class="muted">${x.date||""}</td><td><span class="chip">${esc(x.category||"")}</span></td><td>${esc(x.note||"—")}</td><td class="muted">${esc(byId(db.accounts,x.accountId)?.name||"—")}</td><td class="num">${fmt(x.amount)}</td><td class="noprint right"><button class="btn sm" onclick="editExpense('${x.id}')">تعديل</button> <button class="btn link" onclick="delExpense('${x.id}')">حذف</button></td></tr>`).join("")||`<tr><td colspan="6" class="empty">لا يوجد مصاريف</td></tr>`;}
+
+/* ===================== MONTHLY SERVICES ===================== */
+let editingServiceId=null;
+function addService(){const n=document.getElementById("svName").value.trim();const amt=Number(document.getElementById("svAmount").value||0);if(!n)return alert("أدخل البيان");if(amt<=0)return alert("أدخل المبلغ");
+  if(editingServiceId){const x=byId(db.services,editingServiceId);if(x){x.label=n;x.amount=amt;x.date=document.getElementById("svDate").value||today();}cancelEditService();save(db);refresh();return;}
+  db.services.push({id:uid("SV"),label:n,amount:amt,date:document.getElementById("svDate").value||today(),createdAt:NOW()});save(db);
+  document.getElementById("svName").value="";document.getElementById("svAmount").value="";refresh();}
+function editService(id){const x=byId(db.services,id);if(!x)return;editingServiceId=id;document.getElementById("svName").value=x.label||"";document.getElementById("svAmount").value=x.amount;document.getElementById("svDate").value=x.date||today();document.getElementById("svSaveBtn").textContent="تحديث";document.getElementById("svCancelBtn").style.display="";}
+function cancelEditService(){editingServiceId=null;const b=document.getElementById("svSaveBtn");if(b)b.textContent="حفظ";const c=document.getElementById("svCancelBtn");if(c)c.style.display="none";document.getElementById("svName").value="";document.getElementById("svAmount").value="";}
+function delService(id){if(!confirm("حذف الخدمة؟"))return;db.services=db.services.filter(s=>s.id!==id);save(db);refresh();}
+function renderServices(){const tb=document.getElementById("servicesTbody");if(!tb)return;const n=db.people.length;
+  const list=[...(db.services||[])].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  tb.innerHTML=list.map(s=>`<tr><td>${esc(s.label)}</td><td class="num">${fmt(s.amount)}</td><td class="num">${fmt(Number(s.amount||0)*n)}</td><td class="muted">${s.date||""}</td><td class="noprint right"><button class="btn sm" onclick="editService('${s.id}')">تعديل</button> <button class="btn link" onclick="delService('${s.id}')">حذف</button></td></tr>`).join("")||`<tr><td colspan="5" class="empty">لا يوجد خدمات</td></tr>`;
+  const totPer=(db.services||[]).reduce((s,x)=>s+Number(x.amount||0),0);const tf=document.getElementById("servicesTfoot");if(tf)tf.innerHTML=(db.services||[]).length?`<tr><th>الإجمالي لكل ساكن</th><th class="num">${fmt(totPer)}</th><th class="num">${fmt(totPer*n)}</th><th></th><th class="noprint"></th></tr>`:"";}
+
+/* === SHORT PERSON STATEMENT PRINT (added) === */
+(function(){
+  if(typeof renderPrintPreview==='function'){var _rp=renderPrintPreview;renderPrintPreview=function(){var pt=document.getElementById('printType');var t=pt?pt.value:'';if(t!=='personstmt')return _rp.apply(this,arguments);var building=((document.getElementById('prBuilding')||{}).value||'').trim();var dateStr=fmtDMY(today());var lastWater=function(pid){var rs=db.readings.filter(function(r){return r.personId===pid;});if(!rs.length)return 0;rs.sort(function(a,b){return (b.date||'').localeCompare(a.date||'');});return readingTotal(rs[0]);};var ppl=db.people.slice().sort(function(a,b){return a.name.localeCompare(b.name,'ar');});var tw=0,tp=0,td=0,tu=0;var rows=ppl.map(function(p){var lw=lastWater(p.id);var due=personDue(p.id)+servicesDue()+personOldDebt(p.id);var paid=personPaid(p.id);var debt=due-paid;tw+=lw;tp+=paid;td+=(debt>0?debt:0);tu+=due;return `<tr><td>${dateStr}</td><td style='text-align:right'>${esc(p.name)}</td><td>${fmt(lw)}</td><td>${fmt(paid)}</td><td class='${debt>0.0001?'owe':''}'>${debt>0.0001?fmt(debt):'—'}</td><td>${fmt(due)}</td></tr>`;}).join('');var html=`<!doctype html><html lang='ar' dir='rtl'><head><meta charset='utf-8'><style>*{box-sizing:border-box}body{font-family:-apple-system,'Noto Kufi Arabic','Segoe UI',Tahoma,Arial,sans-serif;color:#111;margin:18px;font-size:13px}h2{margin:0 0 2px;font-size:18px}.sub{color:#666;font-size:12px;margin-bottom:12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:6px 8px;text-align:center;font-variant-numeric:tabular-nums}th{background:#f3f3f1;font-size:12px}tfoot td{font-weight:700;background:#fafafa}.owe{color:#a8332a;font-weight:600}</style></head><body><h2>كشف حساب مختصر للسكان</h2><div class='sub'>${esc(building||'')} · بتاريخ ${dateStr}</div><table><thead><tr><th>التاريخ</th><th>الاسم</th><th>آخر مبلغ مياه</th><th>المدفوعات</th><th>المتبقي (الدين)</th><th>الإجمالي المستحق</th></tr></thead><tbody>${rows||`<tr><td colspan='6'>لا يوجد سكان</td></tr>`}</tbody><tfoot><tr><td colspan='2'>الإجمالي</td><td>${fmt(tw)}</td><td>${fmt(tp)}</td><td>${fmt(td)}</td><td>${fmt(tu)}</td></tr></tfoot></table></body></html>`;var f=document.getElementById('printFrame');if(f){var doc=f.contentDocument||f.contentWindow.document;doc.open();doc.write(html);doc.close();}};}
+  if(typeof onPrintTypeChange==='function'){var _op=onPrintTypeChange;onPrintTypeChange=function(){var pt=document.getElementById('printType');var t=pt?pt.value:'';if(t!=='personstmt')return _op.apply(this,arguments);['prPeriodWrap','prServiceWrap','prLabelWrap'].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display='none';});var h=document.getElementById('prHint');if(h)h.textContent='كشف مختصر لكل السكان: التاريخ، الاسم، آخر فاتورة مياه، المدفوعات، المتبقي، الإجمالي المستحق.';renderPrintPreview();};}
+  if(typeof openPrint==='function'){var _opr=openPrint;openPrint=function(){var pt=document.getElementById('printType');var t=pt?pt.value:'';if(t!=='personstmt')return _opr.apply(this,arguments);renderPrintPreview();var f=document.getElementById('printFrame');if(f){try{f.contentWindow.focus();}catch(e){}f.contentWindow.print();}};}
+})();
+/* === PERSON STATEMENT BILLS (9 per page) === */
+(function(){
+  var _r=window.renderPrintPreview,_o=window.onPrintTypeChange,_p=window.openPrint;
+  var BLD='عمارة الحجاز';
+  function lastWater(pid){var rs=db.readings.filter(function(r){return r.personId===pid;});if(!rs.length)return 0;rs.sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});return readingTotal(rs[0]);}
+  function card(p){var paid=personPaid(p.id);var totalDue=personDue(p.id)+servicesDue()+personOldDebt(p.id);var remain=totalDue-paid;var lw=lastWater(p.id);return '<div class="bill"><div class="bhead"><div class="bldg">'+esc(BLD)+'</div><div class="ttl">كشف حساب مختصر</div></div><div class="brow"><span>التاريخ</span><b>'+fmtDMY(today())+'</b></div><div class="brow"><span>الاسم</span><b>'+esc(p.name)+'</b></div><div class="brow"><span>آخر مبلغ مياه</span><b>'+fmt(lw)+' ₪</b></div><div class="brow"><span>المدفوعات</span><b>'+fmt(paid)+' ₪</b></div><div class="brow"><span>المتبقي / الدين</span><b class="'+(remain>0.0001?'owe':'')+'">'+fmt(remain>0?remain:0)+' ₪</b></div><div class="brow total"><span>الإجمالي المستحق</span><b>'+fmt(totalDue)+' ₪</b></div></div>';}
+  function buildHTML(){var bn=document.getElementById('prBuilding');BLD=(bn&&bn.value.trim())||'عمارة الحجاز';var people=[...db.people].sort(function(a,b){return a.name.localeCompare(b.name,'ar');});var pages=[];for(var i=0;i<people.length;i+=9){pages.push(people.slice(i,i+9));}var body=pages.map(function(grp){return '<div class="sheet">'+grp.map(card).join('')+'</div>';}).join('');var css='*{box-sizing:border-box;font-family:-apple-system,"Noto Kufi Arabic","Segoe UI",Tahoma,Arial,sans-serif;}body{margin:0;color:#222;}.sheet{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;padding:6mm;page-break-after:always;}.sheet:last-child{page-break-after:auto;}.bill{border:1px solid #9a9a9a;border-radius:6px;padding:7px 9px;display:flex;flex-direction:column;min-height:83mm;}.bill .bhead{text-align:center;border-bottom:1px solid #ccc;padding-bottom:4px;margin-bottom:6px;}.bill .bldg{font-weight:800;color:#0F4C5C;font-size:13px;}.bill .ttl{font-size:11px;color:#777;margin-top:2px;}.brow{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px dotted #e3e3e3;}.brow span{color:#666;}.brow b{font-variant-numeric:tabular-nums;}.brow.total{margin-top:auto;border-top:1px solid #9a9a9a;border-bottom:none;padding-top:6px;font-size:13px;font-weight:700;}.brow.total b{color:#0F4C5C;}.owe{color:#a8332a;font-weight:700;}@media print{@page{size:A4;margin:8mm;}.bill{page-break-inside:avoid;}}';return '<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>'+css+'</style></head><body>'+(body||'<div class="sheet"></div>')+'</body></html>';}
+  function renderInto(frame){if(!frame)return;var d=frame.contentDocument||frame.contentWindow.document;d.open();d.write(buildHTML());d.close();}
+  window.renderPrintPreview=function(){var t=document.getElementById('printType');if(t&&t.value==='personstmt'){renderInto(document.getElementById('printFrame'));return;}return _r&&_r.apply(this,arguments);};
+  window.openPrint=function(){var t=document.getElementById('printType');if(t&&t.value==='personstmt'){var f=document.getElementById('printFrame');renderInto(f);try{f.contentWindow.focus();f.contentWindow.print();}catch(e){window.print();}return;}return _p&&_p.apply(this,arguments);};
+  window.onPrintTypeChange=function(){var r=_o&&_o.apply(this,arguments);var t=document.getElementById('printType');if(t&&t.value==='personstmt'){renderInto(document.getElementById('printFrame'));}return r;};
+})();
+/* ===================== IMPORT READINGS (Excel) ===================== */
+function toISO(d){if(!d)return today();if(d instanceof Date)return d.toISOString().slice(0,10);let s=String(d).trim();if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);const m=s.match(/^(\d{1,2})\/\-.\/\-.$/);if(m){let a=m[1],b=m[2],c=m[3];if(c.length===2)c="20"+c;return c+"-"+String(b).padStart(2,"0")+"-"+String(a).padStart(2,"0");}return s;}
+function pickVal(row,names){for(const nm of names){for(const k in row){if(String(k).trim()===nm)return row[k];}}return "";}
+function impNum(v){return Number(String(v==null?"":v).replace(/[,\s]/g,""))||0;}
+function importReadings(){if(typeof XLSX==="undefined"){alert("مكتبة Excel غير محمّلة — تأكد من اتصال الإنترنت ثم أعد المحاولة.");return;}
+  const i=document.createElement("input");i.type="file";i.accept=".xlsx,.xls,.csv";
+  i.onchange=async()=>{const f=i.files[0];if(!f)return;
+    try{const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{defval:"",raw:false});
+      const defPer=document.getElementById("impPeriod")?.value||"";let added=0,createdPeople=0,skipped=0;
+      rows.forEach(row=>{const name=String(pickVal(row,["الاسم","الإسم","اسم الساكن","الساكن","name","Name"])).trim();
+        const prev=impNum(pickVal(row,["السابقة","القراءة السابقة","prev","previous","Previous"]));
+        const curr=impNum(pickVal(row,["الحالية","القراءة الحالية","curr","current","Current"]));
+        let price=impNum(pickVal(row,["السعر","سعر المتر","سعر م³","price","Price"]));
+        const dateV=pickVal(row,["التاريخ","date","Date"]);const perName=String(pickVal(row,["الفترة","period","Period"])).trim();
+        if(!name&&!curr&&!prev)return;if(!name){skipped++;return;}
+        let per=null;if(perName)per=db.periods.find(pp=>(pp.name||"").trim()===perName);if(!per&&defPer)per=byId(db.periods,defPer);
+        if(!per){skipped++;return;}if(!price)price=Number(per.pricePerM3||0);
+        let person=db.people.find(pp=>(pp.name||"").trim()===name);if(!person){person={id:uid("PER"),name:name,notes:"",createdAt:NOW()};db.people.push(person);createdPeople++;}
+        db.readings.push({id:uid("RD"),personId:person.id,periodId:per.id,prev:prev,curr:curr,price:price,date:toISO(dateV),createdAt:NOW()});added++;});
+      save(db);refresh();alert("تم الاستيراد: "+added+" قراءة"+(createdPeople?(" · سكان جدد: "+createdPeople):"")+(skipped?(" · تم تجاهل "+skipped+" صف"):""));
+    }catch(e){alert("تعذّر قراءة الملف: "+e.message);}};
+  i.click();}
+function downloadReadingsTemplate(){if(typeof XLSX==="undefined"){alert("مكتبة Excel غير محمّلة — تأكد من اتصال الإنترنت.");return;}
+  const aoa=[["الاسم","الفترة","السابقة","الحالية","السعر","التاريخ"],["أبو عمر الشرفا","فترة 19–30 مايو 2026",129850,132010,7.304,"2026-05-30"]];
+  const ws=XLSX.utils.aoa_to_sheet(aoa);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"قراءات");XLSX.writeFile(wb,"قالب-قراءات-المياه.xlsx");}
+
+/* ===================== ACCOUNTS ===================== */
+function addAccount(){const n=document.getElementById("accName").value.trim();if(!n)return alert("أدخل الاسم");
+  db.accounts.push({id:uid("ACC"),name:n,opening:Number(accOpening.value||0),createdAt:NOW()});save(db);accName.value="";accOpening.value="0";refresh();}
+function delAccount(id){if(!confirm("حذف الحساب؟"))return;db.accounts=db.accounts.filter(a=>a.id!==id);save(db);refresh();}
+function accIncome(id){return db.incomes.filter(x=>x.accountId===id).reduce((s,x)=>s+Number(x.amount||0),0);}
+function accExpense(id){return db.expenses.filter(x=>x.accountId===id).reduce((s,x)=>s+Number(x.amount||0),0);}
+function renderAccounts(){const tb=document.getElementById("accountsTbody");if(!tb)return;let ti=0,te=0,tba=0;
+  tb.innerHTML=db.accounts.map(a=>{const inc=accIncome(a.id),ex=accExpense(a.id),bal=Number(a.opening||0)+inc-ex;ti+=inc;te+=ex;tba+=bal;
+    return `<tr><td>${esc(a.name)}</td><td class="num">${fmt(inc)}</td><td class="num">${fmt(ex)}</td><td class="num"><strong>${fmt(bal)}</strong></td><td class="noprint right"><button class="btn link" onclick="delAccount('${a.id}')">حذف</button></td></tr>`;
+  }).join("")||`<tr><td colspan="5" class="empty">لا يوجد حسابات</td></tr>`;
+  document.getElementById("accountsTfoot").innerHTML=db.accounts.length?`<tr><th>الإجمالي</th><th class="num">${fmt(ti)}</th><th class="num">${fmt(te)}</th><th class="num">${fmt(tba)}</th><th class="noprint"></th></tr>`:"";}
+function accountReportHTML(autoprint){
+  const sel=document.getElementById("accReportAccount")?.value||"";
+  const accs=sel?db.accounts.filter(a=>a.id===sel):db.accounts;
+  const dateStr=fmtDMY(today());
+  const css='body{font-family:Tahoma,"Cairo",Arial,sans-serif;direction:rtl;color:#1a1a1a;padding:24px;max-width:820px;margin:0 auto}h1{font-size:20px;color:#0F4C5C;margin:0 0 2px}.sub{color:#777;font-size:12px;margin-bottom:18px}.acc{margin-bottom:34px}.acc h2{font-size:16px;color:#0F4C5C;border-bottom:2px solid #C9A227;padding-bottom:5px;margin:0 0 10px}.sum{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 16px}.sum .box{flex:1;min-width:120px;border:1px solid #ddd;border-right:3px solid #C9A227;border-radius:6px;padding:8px 10px}.sum .t{color:#777;font-size:11px}.sum .v{font-size:16px;font-weight:800;color:#0F4C5C}.owe{color:#a8332a}.ok{color:#2f7a2f}h3{font-size:13px;margin:14px 0 6px;color:#1B3A57}table{width:100%;border-collapse:collapse;margin-bottom:6px}th,td{border:1px solid #ccc;padding:5px 7px;font-size:12px;text-align:right}th{background:#f0f0ee;color:#444}td.num,th.num{text-align:left;direction:ltr}tfoot td{font-weight:800;background:#faf7f0}@media print{body{padding:6mm}}';
+  let body="";
+  accs.forEach(a=>{
+    const incs=db.incomes.filter(x=>x.accountId===a.id).sort((x,y)=>(x.date||"").localeCompare(y.date||""));
+    const exps=db.expenses.filter(x=>x.accountId===a.id).sort((x,y)=>(x.date||"").localeCompare(y.date||""));
+    const incTot=incs.reduce((s,x)=>s+Number(x.amount||0),0);
+    const exTot=exps.reduce((s,x)=>s+Number(x.amount||0),0);
+    const opening=Number(a.opening||0);const bal=opening+incTot-exTot;
+    const incRows=incs.map(x=>'<tr><td>'+esc(fmtDMY(x.date))+'</td><td>'+esc(x.category||"")+'</td><td>'+esc(x.personId?(byId(db.people,x.personId)?.name||""):(x.note||"—"))+'</td><td>'+esc(x.note||"")+'</td><td class="num">'+fmt(x.amount)+'</td></tr>').join("")||'<tr><td colspan="5" style="text-align:center;color:#999">لا يوجد وارد</td></tr>';
+    const exRows=exps.map(x=>'<tr><td>'+esc(fmtDMY(x.date))+'</td><td>'+esc(x.category||"")+'</td><td>'+esc(x.note||"—")+'</td><td class="num">'+fmt(x.amount)+'</td></tr>').join("")||'<tr><td colspan="4" style="text-align:center;color:#999">لا يوجد مصاريف</td></tr>';
+    body+='<div class="acc"><h2>'+esc(a.name)+'</h2><div class="sum">'+
+      '<div class="box"><div class="t">رصيد افتتاحي</div><div class="v">'+fmt(opening)+' ₪</div></div>'+
+      '<div class="box"><div class="t">إجمالي الوارد</div><div class="v">'+fmt(incTot)+' ₪</div></div>'+
+      '<div class="box"><div class="t">إجمالي المصاريف</div><div class="v">'+fmt(exTot)+' ₪</div></div>'+
+      '<div class="box"><div class="t">الرصيد الحالي</div><div class="v '+(bal<0?'owe':'ok')+'">'+fmt(bal)+' ₪</div></div></div>'+
+      '<h3>الوارد ('+incs.length+')</h3><table><thead><tr><th>التاريخ</th><th>التصنيف</th><th>الساكن/البيان</th><th>ملاحظة</th><th class="num">المبلغ</th></tr></thead><tbody>'+incRows+'</tbody><tfoot><tr><td colspan="4">إجمالي الوارد</td><td class="num">'+fmt(incTot)+'</td></tr></tfoot></table>'+
+      '<h3>المصاريف ('+exps.length+')</h3><table><thead><tr><th>التاريخ</th><th>التصنيف</th><th>البيان</th><th class="num">المبلغ</th></tr></thead><tbody>'+exRows+'</tbody><tfoot><tr><td colspan="3">إجمالي المصاريف</td><td class="num">'+fmt(exTot)+'</td></tr></tfoot></table></div>';
+  });
+  if(!accs.length)body='<div style="text-align:center;color:#999;padding:40px">لا يوجد حسابات</div>';
+  const ap=autoprint?'<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script>':'';
+  return '<!doctype html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>تقرير الحسابات</title><style>'+css+'</style></head><body><h1>التقرير المالي للحسابات</h1><div class="sub">عمارة الحجاز · بتاريخ '+dateStr+'</div>'+body+ap+'</body></html>';
+}
+function printAccountReport(){const w=window.open("","_blank");if(!w){alert("اسمح بالنوافذ المنبثقة للطباعة");return;}w.document.open();w.document.write(accountReportHTML(true));w.document.close();}
+
+/* ===================== GENERAL BILLS ===================== */
+let editingBillId=null;
+function addBill(){const n=document.getElementById("blName").value.trim();const amt=Number(document.getElementById("blAmount").value||0);if(!n)return alert("أدخل اسم الفاتورة");if(amt<=0)return alert("أدخل المبلغ");
+  if(editingBillId){const x=byId(db.bills,editingBillId);if(x){x.name=n;x.amount=amt;x.date=document.getElementById("blDate").value||today();x.accountId=document.getElementById("blAccount").value||null;x.note=document.getElementById("blNote").value.trim();}cancelEditBill();save(db);refresh();return;}
+  db.bills.push({id:uid("BL"),name:n,amount:amt,date:document.getElementById("blDate").value||today(),accountId:document.getElementById("blAccount").value||null,note:document.getElementById("blNote").value.trim(),paid:false,expenseId:null,createdAt:NOW()});save(db);
+  document.getElementById("blName").value="";document.getElementById("blAmount").value="";document.getElementById("blNote").value="";refresh();}
+function editBill(id){const x=byId(db.bills,id);if(!x)return;editingBillId=id;document.getElementById("blName").value=x.name||"";document.getElementById("blAmount").value=x.amount;document.getElementById("blDate").value=x.date||today();document.getElementById("blAccount").value=x.accountId||"";document.getElementById("blNote").value=x.note||"";document.getElementById("blSaveBtn").textContent="تحديث";document.getElementById("blCancelBtn").style.display="";}
+function cancelEditBill(){editingBillId=null;const b=document.getElementById("blSaveBtn");if(b)b.textContent="حفظ";const c=document.getElementById("blCancelBtn");if(c)c.style.display="none";document.getElementById("blName").value="";document.getElementById("blAmount").value="";document.getElementById("blNote").value="";}
+function delBill(id){if(!confirm("حذف الفاتورة؟"))return;const x=byId(db.bills,id);if(x&&x.expenseId)db.expenses=db.expenses.filter(e=>e.id!==x.expenseId);db.bills=db.bills.filter(b=>b.id!==id);save(db);refresh();}
+function payBill(id){const x=byId(db.bills,id);if(!x)return;if(x.paid){if(!confirm("إلغاء تسديد الفاتورة؟"))return;if(x.expenseId)db.expenses=db.expenses.filter(e=>e.id!==x.expenseId);x.paid=false;x.expenseId=null;save(db);refresh();return;}
+  const acc=x.accountId||(db.accounts[0]&&db.accounts[0].id)||null;
+  const ex={id:uid("EX"),date:x.date||today(),accountId:acc,amount:Number(x.amount||0),category:"فواتير عامة",note:x.name+(x.note?(" — "+x.note):""),createdAt:NOW()};
+  db.expenses.push(ex);x.paid=true;x.expenseId=ex.id;x.accountId=acc;save(db);refresh();}
+function renderBills(){const tb=document.getElementById("billsTbody");if(!tb)return;const f=document.getElementById("blFilter")?.value||"";
+  let list=[...(db.bills||[])];if(f==="paid")list=list.filter(b=>b.paid);if(f==="unpaid")list=list.filter(b=>!b.paid);
+  list.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  tb.innerHTML=list.map(b=>`<tr><td>${esc(b.name)}${b.note?'<div class="muted" style="font-size:11px">'+esc(b.note)+'</div>':''}</td><td class="num">${fmt(b.amount)}</td><td class="muted">${b.date||""}</td><td class="noprint"><button class="btn sm" onclick="payBill('${b.id}')">${b.paid?'<span style="color:#2f7a2f">مدفوعة</span>':'<span class="owe">تسديد</span>'}</button></td><td class="noprint right"><button class="btn sm" onclick="editBill('${b.id}')">تعديل</button> <button class="btn link" onclick="delBill('${b.id}')">حذف</button></td></tr>`).join("")||`<tr><td colspan="5" class="empty">لا يوجد فواتير</td></tr>`;
+  const tot=(db.bills||[]).reduce((s,x)=>s+Number(x.amount||0),0);const unpaid=(db.bills||[]).filter(b=>!b.paid).reduce((s,x)=>s+Number(x.amount||0),0);
+  const tf=document.getElementById("billsTfoot");if(tf)tf.innerHTML=(db.bills||[]).length?`<tr><th>الإجمالي</th><th class="num">${fmt(tot)}</th><th colspan="3" class="owe">غير مدفوع: ${fmt(unpaid)} ₪</th></tr>`:"";}
+function billsData(){const f=document.getElementById("blFilter")?.value||"";let l=[...(db.bills||[])];if(f==="paid")l=l.filter(b=>b.paid);if(f==="unpaid")l=l.filter(b=>!b.paid);l.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  return{title:"الفواتير العامة",headers:["الفاتورة","المبلغ","التاريخ","الحالة","الحساب","ملاحظة"],
+    rows:l.map(b=>[b.name,b.amount,b.date||"",b.paid?"مدفوعة":"غير مدفوعة",byId(db.accounts,b.accountId)?.name||"",b.note||""])};}
+
+/* ===================== MONTHLY REPORT ===================== */
+function curMonth(){return today().slice(0,7);}
+function monthlyData(month){const inM=d=>String(d||"").slice(0,7)===month;
+  return {incs:db.incomes.filter(x=>inM(x.date)).sort((a,b)=>(a.date||"").localeCompare(b.date||"")),exps:db.expenses.filter(x=>inM(x.date)).sort((a,b)=>(a.date||"").localeCompare(b.date||"")),reads:db.readings.filter(x=>inM(x.date)).sort((a,b)=>(a.date||"").localeCompare(b.date||"")),svcs:(db.services||[]).filter(x=>inM(x.date)),bills:(db.bills||[]).filter(x=>inM(x.date))};}
+function renderMonthlyPreview(){const a=document.getElementById("monthlyArea");if(!a)return;const m=document.getElementById("mrMonth");if(m&&!m.value)m.value=curMonth();const month=(m&&m.value)||curMonth();const d=monthlyData(month);
+  const incTot=d.incs.reduce((s,x)=>s+Number(x.amount||0),0),exTot=d.exps.reduce((s,x)=>s+Number(x.amount||0),0);
+  a.innerHTML='<div class="kpis"><div class="kpi"><div class="t">وارد الشهر</div><div class="v">'+fmt(incTot)+'</div></div><div class="kpi"><div class="t">مصاريف الشهر</div><div class="v">'+fmt(exTot)+'</div></div><div class="kpi"><div class="t">صافي الشهر</div><div class="v">'+fmt(incTot-exTot)+'</div></div><div class="kpi"><div class="t">عدد الحركات</div><div class="v">'+(d.incs.length+d.exps.length)+'</div></div></div><div class="muted" style="margin-top:12px;font-size:12px">يشمل التقرير الكامل عند الطباعة: كل الوارد والمصاريف والفواتير العامة وخدمات العمارة وقراءات المياه خلال الشهر المختار.</div>';}
+function monthlyReportHTML(month,autoprint){const B=esc((document.getElementById("mrBuilding")&&document.getElementById("mrBuilding").value)||"عمارة الحجاز");const d=monthlyData(month);
+  const incTot=d.incs.reduce((s,x)=>s+Number(x.amount||0),0),exTot=d.exps.reduce((s,x)=>s+Number(x.amount||0),0);
+  const css='body{font-family:Tahoma,"Cairo",Arial,sans-serif;direction:rtl;color:#1a1a1a;padding:24px;max-width:900px;margin:0 auto}h1{font-size:21px;color:#0F4C5C;margin:0 0 2px}.sub{color:#777;font-size:12px;margin-bottom:16px}.sum{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 18px}.sum .box{flex:1;min-width:130px;border:1px solid #ddd;border-right:3px solid #C9A227;border-radius:6px;padding:8px 10px}.sum .t{color:#777;font-size:11px}.sum .v{font-size:17px;font-weight:800;color:#0F4C5C}.owe{color:#a8332a}.ok{color:#2f7a2f}h2{font-size:15px;color:#0F4C5C;border-bottom:2px solid #C9A227;padding-bottom:4px;margin:18px 0 8px}table{width:100%;border-collapse:collapse;margin-bottom:6px}th,td{border:1px solid #ccc;padding:5px 7px;font-size:12px;text-align:right}th{background:#f0f0ee;color:#444}td.num,th.num{text-align:left;direction:ltr}tfoot td{font-weight:800;background:#faf7f0}.emp{color:#999;text-align:center;padding:10px}@media print{body{padding:6mm}}';
+  const incRows=d.incs.map(x=>'<tr><td>'+esc(fmtDMY(x.date))+'</td><td>'+esc(x.category||"")+'</td><td>'+esc(x.personId?(byId(db.people,x.personId)?.name||""):(x.note||"—"))+'</td><td>'+esc(byId(db.accounts,x.accountId)?.name||"—")+'</td><td class="num">'+fmt(x.amount)+'</td></tr>').join("")||'<tr><td colspan="5" class="emp">لا يوجد</td></tr>';
+  const exRows=d.exps.map(x=>'<tr><td>'+esc(fmtDMY(x.date))+'</td><td>'+esc(x.category||"")+'</td><td>'+esc(x.note||"—")+'</td><td>'+esc(byId(db.accounts,x.accountId)?.name||"—")+'</td><td class="num">'+fmt(x.amount)+'</td></tr>').join("")||'<tr><td colspan="5" class="emp">لا يوجد</td></tr>';
+  const blRows=d.bills.map(b=>'<tr><td>'+esc(b.name)+'</td><td class="num">'+fmt(b.amount)+'</td><td>'+esc(fmtDMY(b.date))+'</td><td>'+(b.paid?"مدفوعة":"غير مدفوعة")+'</td></tr>').join("")||'<tr><td colspan="4" class="emp">لا يوجد</td></tr>';
+  const svRows=d.svcs.map(s=>'<tr><td>'+esc(s.label)+'</td><td class="num">'+fmt(s.amount)+'</td><td>'+esc(fmtDMY(s.date))+'</td></tr>').join("")||'<tr><td colspan="3" class="emp">لا يوجد</td></tr>';
+  const rdRows=d.reads.map(r=>'<tr><td>'+esc(fmtDMY(r.date))+'</td><td>'+esc(byId(db.people,r.personId)?.name||"")+'</td><td>'+esc(byId(db.periods,r.periodId)?.name||"")+'</td><td class="num">'+fmt3(consumption(r))+'</td><td class="num">'+fmt(readingTotal(r))+'</td></tr>').join("")||'<tr><td colspan="5" class="emp">لا يوجد</td></tr>';
+  const ap=autoprint?'<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script>':'';
+  return '<!doctype html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>التقرير الشهري</title><style>'+css+'</style></head><body><h1>التقرير الشهري الكامل — '+esc(month)+'</h1><div class="sub">'+B+'</div><div class="sum"><div class="box"><div class="t">إجمالي الوارد</div><div class="v ok">'+fmt(incTot)+' ₪</div></div><div class="box"><div class="t">إجمالي المصاريف</div><div class="v owe">'+fmt(exTot)+' ₪</div></div><div class="box"><div class="t">صافي الشهر</div><div class="v">'+fmt(incTot-exTot)+' ₪</div></div></div>'+
+    '<h2>الوارد ('+d.incs.length+')</h2><table><thead><tr><th>التاريخ</th><th>التصنيف</th><th>الساكن/البيان</th><th>الحساب</th><th class="num">المبلغ</th></tr></thead><tbody>'+incRows+'</tbody><tfoot><tr><td colspan="4">الإجمالي</td><td class="num">'+fmt(incTot)+'</td></tr></tfoot></table>'+
+    '<h2>المصاريف ('+d.exps.length+')</h2><table><thead><tr><th>التاريخ</th><th>التصنيف</th><th>البيان</th><th>الحساب</th><th class="num">المبلغ</th></tr></thead><tbody>'+exRows+'</tbody><tfoot><tr><td colspan="4">الإجمالي</td><td class="num">'+fmt(exTot)+'</td></tr></tfoot></table>'+
+    '<h2>الفواتير العامة ('+d.bills.length+')</h2><table><thead><tr><th>الفاتورة</th><th class="num">المبلغ</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody>'+blRows+'</tbody></table>'+
+    '<h2>خدمات العمارة ('+d.svcs.length+')</h2><table><thead><tr><th>البيان</th><th class="num">المبلغ/ساكن</th><th>التاريخ</th></tr></thead><tbody>'+svRows+'</tbody></table>'+
+    '<h2>قراءات المياه ('+d.reads.length+')</h2><table><thead><tr><th>التاريخ</th><th>الساكن</th><th>الفترة</th><th class="num">م³</th><th class="num">الإجمالي</th></tr></thead><tbody>'+rdRows+'</tbody></table>'+ap+'</body></html>';}
+function printMonthlyReport(){const m=document.getElementById("mrMonth");const month=(m&&m.value)||curMonth();const w=window.open("","_blank");if(!w){alert("اسمح بالنوافذ المنبثقة");return;}w.document.open();w.document.write(monthlyReportHTML(month,true));w.document.close();}
+
+/* ===================== DEBTS ===================== */
+function renderDebts(){const tb=document.getElementById("debtsTbody");if(!tb)return;const per=document.getElementById("debtPeriod")?.value||"";
+  const sd=per?0:servicesDue();
+  let tm=0,twd=0,tsd=0,ttd=0,tp=0,tr=0;
+  const rows=db.people.map(p=>({p,m3:personM3(p.id,per),wdue:personDue(p.id,per),sdue:sd,old:per?0:personOldDebt(p.id),paid:per?personWaterPaid(p.id):personPaid(p.id)})).sort((a,b)=>((b.wdue+b.sdue+b.old)-b.paid)-((a.wdue+a.sdue+a.old)-a.paid));
+  tb.innerHTML=rows.map(({p,m3,wdue,sdue,old,paid})=>{const due=wdue+sdue+old,rem=due-paid;tm+=m3;twd+=wdue;tsd+=sdue;ttd+=due;tp+=paid;tr+=rem;
+    return `<tr><td><span class="plink" onclick="goToStatement('${p.id}')">${esc(p.name)}</span></td><td class="num">${fmt(m3)}</td><td class="num">${fmt(wdue)}</td><td class="num">${fmt(sdue)}</td><td class="num">${fmt(due)}</td><td class="num">${fmt(paid)}</td><td class="num ${rem>0?'owe':'muted'}">${rem!==0?fmt(rem):"—"}</td></tr>`;
+  }).join("")||`<tr><td colspan="7" class="empty">لا يوجد بيانات</td></tr>`;
+  document.getElementById("debtsTfoot").innerHTML=`<tr><th>الإجمالي</th><th class="num">${fmt(tm)}</th><th class="num">${fmt(twd)}</th><th class="num">${fmt(tsd)}</th><th class="num">${fmt(ttd)}</th><th class="num">${fmt(tp)}</th><th class="num owe">${fmt(tr)}</th></tr>`;}
+
+/* ===================== STATEMENT ===================== */
+function renderStatement(){const area=document.getElementById("statementArea");if(!area)return;
+  const pid=document.getElementById("stPerson")?.value||"";const per=document.getElementById("stPeriod")?.value||"";
+  if(!pid){area.innerHTML='<div class="empty">اختر ساكن لعرض كشف الحساب</div>';return;}
+  const p=byId(db.people,pid);const wDue=personDue(pid,per),wPaid=personWaterPaid(pid),wRem=wDue-wPaid;const sDue=per?0:servicesDue(),sPaid=per?0:personServicesPaid(pid),sRem=sDue-sPaid;const oDue=per?0:personOldDebt(pid),oPaid=per?0:personOldDebtPaid(pid),oRem=oDue-oPaid;const due=wDue+sDue+oDue,paid=per?wPaid:personIncomeTotal(pid),rem=due-paid;
+  const reads=db.readings.filter(r=>r.personId===pid&&(!per||r.periodId===per)).sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  const pays=db.incomes.filter(x=>x.personId===pid).sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  area.innerHTML=`
+    <div class="topbar"><div><div style="font-size:17px;font-weight:700">كشف حساب — ${esc(p.name)}</div>
+      <div class="muted" style="font-size:12px">${per?esc(byId(db.periods,per)?.name||""):"كل الفترات"} · ${new Date().toLocaleDateString("en-GB")}</div></div>
+      <div class="right">${rem>0.0001?'<span class="owe" style="font-size:16px">مديونية: '+fmt(rem)+' ₪</span>':(rem<-0.0001?'<span style="color:#2f7a2f;font-weight:700;font-size:16px">دفعة مقدمة: '+fmt(-rem)+' ₪</span>':'<span class="muted">الحساب مسدّد</span>')}</div></div>
+    <div class="noprint btnRow"><button class="btn solid" onclick="payWater('${pid}')">تسديد المياه</button><button class="btn solid" onclick="payServices('${pid}')">تسديد الخدمات</button></div>
+    <div class="tableWrap" style="margin:14px 0"><table class="bare"><thead><tr><th>البند</th><th class="num">المستحق</th><th class="num">المدفوع</th><th class="num">المتبقي</th></tr></thead><tbody>
+      <tr><td>تحصيلات المياه</td><td class="num">${fmt(wDue)}</td><td class="num">${fmt(wPaid)}</td><td class="num ${wRem>0?'owe':'muted'}">${fmt(wRem)}</td></tr>
+      <tr><td>خدمات العمارة${per?' (تظهر في «كل الفترات»)':''}</td><td class="num">${fmt(sDue)}</td><td class="num">${fmt(sPaid)}</td><td class="num ${sRem>0?'owe':'muted'}">${fmt(sRem)}</td></tr>
+      <tr><td>ديون سابقة (قبل الإدارة)${per?' (تظهر في «كل الفترات»)':''}</td><td class="num">${fmt(oDue)}</td><td class="num">${fmt(oPaid)}</td><td class="num ${oRem>0?'owe':'muted'}">${fmt(oRem)}</td></tr>
+      <tr><td><strong>الإجمالي</strong></td><td class="num"><strong>${fmt(due)}</strong></td><td class="num"><strong>${fmt(paid)}</strong></td><td class="num ${rem>0?'owe':'muted'}"><strong>${fmt(rem)}</strong></td></tr>
+    </tbody></table></div>
+    <div class="kpis" style="margin:14px 0">
+      <div class="kpi"><div class="t">الاستهلاك (م³)</div><div class="v">${fmt(personM3(pid,per))}</div></div>
+      <div class="kpi"><div class="t">المستحق الكلي</div><div class="v">${fmt(due)}</div></div>
+      <div class="kpi"><div class="t">المدفوع</div><div class="v">${fmt(paid)}</div></div>
+      <div class="kpi"><div class="t">المتبقي</div><div class="v ${rem>0?'owe':''}">${fmt(rem)}</div></div></div>
+    <h3>قراءات المياه</h3>
+    <div class="tableWrap"><table class="bare"><thead><tr><th>التاريخ</th><th>الفترة</th><th class="num">سابقة</th><th class="num">حالية</th><th class="num">م³</th><th class="num">السعر</th><th class="num">الإجمالي</th></tr></thead><tbody>
+    ${reads.map(r=>`<tr><td class="muted">${r.date||""}</td><td class="muted">${esc(byId(db.periods,r.periodId)?.name||"")}</td><td class="num">${fmtN0(r.prev)}</td><td class="num">${fmtN0(r.curr)}</td><td class="num">${fmt3(consumption(r))}</td><td class="num">${fmt(r.price)}</td><td class="num">${fmt(readingTotal(r))}</td></tr>`).join("")||'<tr><td colspan="7" class="empty">لا يوجد قراءات</td></tr>'}
+    </tbody></table></div>
+    <h3 style="margin-top:16px">الدفعات</h3>
+    <div class="tableWrap"><table class="bare"><thead><tr><th>التاريخ</th><th>التصنيف</th><th>الحساب</th><th class="num">المبلغ</th><th class="noprint"></th></tr></thead><tbody>
+    ${pays.map(x=>`<tr><td class="muted">${x.date||""}</td><td><span class="chip">${esc(x.category||"")}</span></td><td class="muted">${esc(byId(db.accounts,x.accountId)?.name||"—")}</td><td class="num">${fmt(x.amount)}</td><td class="noprint right"><button class="btn sm" onclick="printReceipt('${x.id}')">سند</button> <button class="btn sm" onclick="editIncomeFromStatement('${x.id}')">تعديل</button> <button class="btn link" onclick="delIncome('${x.id}')">حذف</button></td></tr>`).join("")||'<tr><td colspan="5" class="empty">لا يوجد دفعات مرتبطة بهذا الساكن</td></tr>'}
+    </tbody></table></div>`;}
+
+/* ===================== RECEIPT ===================== */
+function rcFillIncome(){const pid=document.getElementById("rcPerson").value;const sel=document.getElementById("rcIncome");
+  const list=db.incomes.filter(x=>!pid||x.personId===pid).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  sel.innerHTML='<option value="">— اختر عملية —</option>'+list.map(x=>`<option value="${x.id}">${x.date||""} · ${fmt(x.amount)} · ${esc(x.category||"")}</option>`).join("");renderReceipt();}
+function renderReceipt(){const area=document.getElementById("receiptArea");if(!area)return;const x=byId(db.incomes,document.getElementById("rcIncome")?.value);
+  if(!x){area.innerHTML='<div class="empty">اختر عملية قبض لعرض السند</div>';return;}
+  const who=x.personId?(byId(db.people,x.personId)?.name||""):(x.note||"");
+  area.innerHTML=`<div class="rhead"><div class="b">${esc(document.getElementById("rcBuilding").value||"المبنى")}</div><div class="muted">سند قبض (سمد قبض)</div></div>
+    <div class="rmeta"><span class="mono">رقم: ${esc(x.id)}</span><span class="mono">التاريخ: ${x.date||""}</span></div>
+    <table><tbody>
+      <tr><td style="width:38%" class="muted">استلمنا من</td><td><strong>${esc(who||"—")}</strong></td></tr>
+      <tr><td class="muted">المبلغ</td><td><strong>${fmt(x.amount)}</strong></td></tr>
+      <tr><td class="muted">وذلك عن</td><td>${esc(x.category||"")}${document.getElementById("rcExtra").value?(" — "+esc(document.getElementById("rcExtra").value)):""}</td></tr>
+      <tr><td class="muted">الحساب</td><td>${esc(byId(db.accounts,x.accountId)?.name||"—")}</td></tr>
+      <tr><td class="muted">البيان</td><td>${esc(x.note||"—")}</td></tr></tbody></table>
+    <div class="sign"><div><div class="muted">توقيع المستلم</div><div class="line"></div></div><div><div class="muted">توقيع الدافع</div><div class="line"></div></div></div>`;}
+
+/* ===================== RECEIPT (detailed + print) ===================== */
+function receiptModel(x){const pid=x.personId;const name=pid?(byId(db.people,pid)?.name||""):(x.note||"");
+  const wDue=pid?personDue(pid):0,sDue=pid?servicesDue():0,totalDue=wDue+sDue,totalPaid=pid?personIncomeTotal(pid):0;
+  const netAfter=totalDue-totalPaid,prevBal=netAfter+Number(x.amount||0);
+  const billDue=(x.category==="خدمات")?sDue:(x.category==="تحصيلات ماء"?wDue:totalDue);
+  const reads=pid?db.readings.filter(r=>r.personId===pid).sort((a,b)=>(a.date||"").localeCompare(b.date||"")):[];
+  return {id:x.id,name,amount:Number(x.amount||0),category:x.category||"",note:x.note||"",date:x.date||"",account:byId(db.accounts,x.accountId)?.name||"—",billDue,prevBal,netAfter,reads};}
+function balLabel(v){if(v>0.0001)return '<span style="color:#a8332a;font-weight:700">'+fmt(v)+' ₪ (مديونية)</span>';if(v<-0.0001)return '<span style="color:#2f7a2f;font-weight:700">'+fmt(-v)+' ₪ (دفعة مقدمة)</span>';return '<span>0 ₪ (مسدّد)</span>';}
+function receiptBodyHTML(m,building,extra){
+  const waterRows=m.reads.length?('<div style="margin-top:10px"><div style="font-weight:700;margin-bottom:4px">بيانات المياه</div><table class="wtab"><thead><tr><th>الفترة</th><th>سابقة</th><th>حالية</th><th>م³</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>'+m.reads.map(r=>'<tr><td>'+esc(byId(db.periods,r.periodId)?.name||"")+'</td><td>'+fmtN0(r.prev)+'</td><td>'+fmtN0(r.curr)+'</td><td>'+fmt3(consumption(r))+'</td><td>'+fmt(r.price)+'</td><td>'+fmt(readingTotal(r))+'</td></tr>').join("")+'</tbody></table></div>'):'';
+  return '<div class="rhead"><div class="b">'+esc(building||"المبنى")+'</div><div class="muted">سند قبض</div></div>'+
+    '<div class="rmeta"><span class="mono">رقم: '+esc(m.id)+'</span><span class="mono">التاريخ: '+esc(fmtDMY(m.date))+'</span></div>'+
+    '<table><tbody>'+
+    '<tr><td style="width:40%" class="muted">استلمنا من</td><td><strong>'+esc(m.name||"—")+'</strong></td></tr>'+
+    '<tr><td class="muted">البند / الفاتورة المسددة</td><td>'+esc(m.category)+(extra?(" — "+esc(extra)):"")+(m.note?(" — "+esc(m.note)):"")+'</td></tr>'+
+    '<tr><td class="muted">قيمة الفاتورة / المستحق</td><td>'+fmt(m.billDue)+' ₪</td></tr>'+
+    '<tr><td class="muted">قيمة الدفعة</td><td><strong>'+fmt(m.amount)+' ₪</strong></td></tr>'+
+    '<tr><td class="muted">الرصيد السابق</td><td>'+balLabel(m.prevBal)+'</td></tr>'+
+    '<tr><td class="muted">الرصيد بعد الدفعة</td><td>'+balLabel(m.netAfter)+'</td></tr>'+
+    '<tr><td class="muted">الحساب</td><td>'+esc(m.account)+'</td></tr>'+
+    '</tbody></table>'+waterRows+
+    '<div class="sign"><div><div class="muted">توقيع المستلم</div><div class="line"></div></div><div><div class="muted">توقيع الدافع</div><div class="line"></div></div></div>';}
+function renderReceipt(){const area=document.getElementById("receiptArea");if(!area)return;const x=byId(db.incomes,document.getElementById("rcIncome")?.value);
+  if(!x){area.innerHTML='<div class="empty">اختر عملية قبض لعرض السند</div>';return;}
+  area.innerHTML=receiptBodyHTML(receiptModel(x),document.getElementById("rcBuilding").value,document.getElementById("rcExtra").value);}
+function printReceipt(id){const x=id?byId(db.incomes,id):null;if(!x){alert("اختر عملية قبض أولاً");return;}
+  const building=(document.getElementById("rcBuilding")&&document.getElementById("rcBuilding").value)||"عمارة الحجاز";
+  const extra=(document.getElementById("rcExtra")&&document.getElementById("rcExtra").value)||"";
+  const css='body{font-family:Tahoma,"Cairo",Arial,sans-serif;direction:rtl;color:#1a1a1a;padding:24px;max-width:620px;margin:0 auto}.rhead{text-align:center;border-bottom:2px solid #0F4C5C;padding-bottom:10px;margin-bottom:12px}.rhead .b{font-size:20px;font-weight:800;color:#0F4C5C}.rhead .muted{color:#777;font-size:13px}.rmeta{display:flex;justify-content:space-between;font-size:12px;color:#777;margin-bottom:10px}.mono{font-family:monospace}table{width:100%;border-collapse:collapse}td{border-bottom:1px dotted #ccc;padding:7px 6px;font-size:13px}.muted{color:#777}.wtab{margin-top:6px;border:1px solid #ccc}.wtab th,.wtab td{border:1px solid #ddd;padding:4px 6px;text-align:center;font-size:12px}.sign{display:flex;gap:30px;margin-top:30px}.sign>div{flex:1}.sign .line{height:34px;border-bottom:1px solid #999}';
+  const html='<!doctype html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>سند قبض</title><style>'+css+'</style></head><body>'+receiptBodyHTML(receiptModel(x),building,extra)+'<script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>';
+  const w=window.open("","_blank");w.document.open();w.document.write(html);w.document.close();}
+
+/* ===================== KPIs ===================== */
+function renderKPIs(){const el=document.getElementById("kpis");if(!el)return;
+  const inc=db.incomes.reduce((s,x)=>s+Number(x.amount||0),0),ex=db.expenses.reduce((s,x)=>s+Number(x.amount||0),0);
+    const wd=db.people.reduce((s,p)=>s+personDue(p.id),0);const sdAll=servicesDue()*db.people.length;const td=wd+sdAll;const tp=db.people.reduce((s,p)=>s+personPaid(p.id),0);
+  el.innerHTML=`<br>    <div class="kpi"><div class="t">عدد السكان</div><div class="v">${db.people.length}</div></div><br>    <div class="kpi"><div class="t">إجمالي الوارد</div><div class="v">${fmt(inc)}</div></div><br>    <div class="kpi"><div class="t">إجمالي المصاريف</div><div class="v">${fmt(ex)}</div></div><br>    <div class="kpi"><div class="t">الصافي</div><div class="v">${fmt(inc-ex)}</div></div><br>    <div class="kpi"><div class="t">مستحق المياه</div><div class="v">${fmt(wd)}</div></div><br>    <div class="kpi"><div class="t">مستحق الخدمات</div><div class="v">${fmt(sdAll)}</div></div><br>    <div class="kpi"><div class="t">المدفوع من السكان</div><div class="v">${fmt(tp)}</div></div><br>    <div class="kpi"><div class="t">المتبقي على السكان</div><div class="v owe">${fmt(Math.max(0,td-tp))}</div></div>`;}
+
+/* ===================== EXPORT (Excel + PDF) ===================== */
+function readingsData(){const f=document.getElementById("rdFilterPeriod")?.value||"";let l=[...db.readings];if(f)l=l.filter(r=>r.periodId===f);l.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  return{title:"قراءات المياه",headers:["الساكن","الفترة","السابقة","الحالية","م³","السعر","الإجمالي","التاريخ"],
+    rows:l.map(r=>[byId(db.people,r.personId)?.name||"",byId(db.periods,r.periodId)?.name||"",r.prev,r.curr,fmt3(consumption(r)),r.price,readingTotal(r),r.date||""])};}
+function incomeData(){const f=document.getElementById("inFilterPerson")?.value||"";const mo=document.getElementById("inFilterMonth")?.value||"";let l=[...db.incomes];if(f)l=l.filter(x=>x.personId===f);if(mo)l=l.filter(x=>String(x.date||"").slice(0,7)===mo);l.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  return{title:"الوارد",headers:["التاريخ","التصنيف","الساكن/البيان","الحساب","المبلغ"],
+    rows:l.map(x=>[x.date||"",x.category||"",x.personId?(byId(db.people,x.personId)?.name||""):(x.note||""),byId(db.accounts,x.accountId)?.name||"",x.amount])};}
+function expensesData(){const f=document.getElementById("exFilterAccount")?.value||"";const mo=document.getElementById("exFilterMonth")?.value||"";let l=[...db.expenses];if(f)l=l.filter(x=>x.accountId===f);if(mo)l=l.filter(x=>String(x.date||"").slice(0,7)===mo);l.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  return{title:"المصاريف",headers:["التاريخ","التصنيف","البيان","الحساب","المبلغ"],
+    rows:l.map(x=>[x.date||"",x.category||"",x.note||"",byId(db.accounts,x.accountId)?.name||"",x.amount])};}
+function debtsData(){const per=document.getElementById("debtPeriod")?.value||"";const sd=per?0:servicesDue();
+  const rows=db.people.map(p=>({p,m3:personM3(p.id,per),wdue:personDue(p.id,per),sdue:sd,old:per?0:personOldDebt(p.id),paid:per?personWaterPaid(p.id):personPaid(p.id)})).sort((a,b)=>((b.wdue+b.sdue+b.old)-b.paid)-((a.wdue+a.sdue+a.old)-a.paid));
+  return{title:"المديونية",headers:["الساكن","الاستهلاك م³","مستحق المياه","مستحق الخدمات","دين قديم","إجمالي المستحق","المدفوع","المتبقي"],
+    rows:rows.map(({p,m3,wdue,sdue,old,paid})=>[p.name,fmt3(m3),wdue,sdue,old,wdue+sdue+old,paid,(wdue+sdue+old)-paid])};}
+function accountsData(){return{title:"الحسابات",headers:["الحساب","الوارد","المصاريف","الرصيد"],
+  rows:db.accounts.map(a=>[a.name,accIncome(a.id),accExpense(a.id),Number(a.opening||0)+accIncome(a.id)-accExpense(a.id)])};}
+
+function exportExcel(title,headers,rows){
+  const html='<html dir="rtl"><head><meta charset="UTF-8"></head><body><table border="1"><thead><tr>'+
+    headers.map(h=>'<th>'+esc(h)+'</th>').join("")+'</tr></thead><tbody>'+
+    rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join("")+'</tr>').join("")+'</tbody></table></body></html>';
+  const blob=new Blob(['\ufeff'+html],{type:"application/vnd.ms-excel"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=title+".xls";a.click();URL.revokeObjectURL(a.href);}
+function exportPDF(title,headers,rows){
+  const w=window.open("","_blank");
+  w.document.write('<html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>'+esc(title)+'</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#222}h1{font-size:18px;margin:0 0 14px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:6px 8px;font-size:12px;text-align:right}th{background:#eee}</style></head><body><h1>'+esc(title)+'</h1><table><thead><tr>'+headers.map(h=>'<th>'+esc(h)+'</th>').join("")+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join("")+'</tr>').join("")+'</tbody></table><script>window.onload=function(){setTimeout(function(){window.print()},250)}<\/script></body></html>');
+  w.document.close();}
+function excelOf(fn){const d=fn();exportExcel(d.title,d.headers,d.rows);}
+function pdfOf(fn){const d=fn();exportPDF(d.title,d.headers,d.rows);}
+
+/* ===================== SHARED BILL DESIGN ===================== */
+const BILL_CSS='*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}body{font-family:"Cairo",sans-serif;background:#d4dde4;color:#1a1a1a;direction:rtl;-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:A4 portrait;margin:0}.pages{display:flex;flex-direction:column;align-items:center;gap:30px;padding:30px 15px}.page{width:210mm;height:297mm;background:#fff;position:relative;overflow:hidden;box-shadow:0 4px 25px rgba(0,0,0,.15);page-break-after:always;break-after:page;flex-shrink:0}.page:last-child{page-break-after:avoid;break-after:avoid}.grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:100%;height:100%;padding:8mm}.cut-overlay{position:absolute;inset:8mm;pointer-events:none;z-index:100}.ch{position:absolute;left:-8mm;right:-8mm;height:0;border-top:1px dashed #a0aab5}.cv{position:absolute;top:-8mm;bottom:-8mm;width:0;border-left:1px dashed #a0aab5}.sc{position:absolute;font-size:11px;color:#788491}.sc-l{left:2mm;transform:translateY(-50%)}.sc-r{right:2mm;transform:translateY(-50%) scaleX(-1)}.sc-t{top:2mm;left:50%;transform:translateX(-50%) rotate(90deg)}.sc-b{bottom:2mm;left:50%;transform:translateX(-50%) rotate(-90deg)}.card{border:.5px solid #c8d1db;background:#FAF7F0;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative}.ch2{background:linear-gradient(135deg,#0F4C5C 0%,#1B3A57 100%);padding:6px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #C9A227}.logo-wrap{display:flex;align-items:center;gap:5px}.logo-svg{width:26px;height:26px}.logo-name{font-size:9px;font-weight:800;color:#FAF7F0;line-height:1.2}.inv-title{font-size:10px;font-weight:800;color:#C9A227;text-align:left;line-height:1.2}.body{flex:1;padding:8px 8px 4px;display:flex;flex-direction:column;gap:5px}.tenant{font-size:14px;font-weight:800;color:#0F4C5C;text-align:center;padding-bottom:4px;border-bottom:2px solid #C9A227;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.period{font-size:9.5px;color:#55616e;text-align:center;font-weight:600}.bt{width:100%;border-collapse:collapse;font-size:11px;margin-top:auto;margin-bottom:auto}.bt td{padding:5px 5px;border:1px solid #dbe2e9}.bt tr:nth-child(even) td{background:rgba(15,76,92,.04)}.bt .lbl{color:#334155;font-weight:600;width:55%}.bt .val{text-align:center;font-weight:700;color:#0F4C5C;direction:ltr}.tr-tot td{background:#C9A227!important;color:#1A1A1A!important;font-weight:800!important;font-size:12.5px!important;border-color:#C9A227!important}.foot{background:#1B3A57;color:#FAF7F0;padding:4px 8px;display:flex;justify-content:space-between;align-items:center;font-size:8.5px;font-weight:600;border-top:2px solid #C9A227}.foot span:last-child{direction:ltr}.card.empty{background:linear-gradient(135deg,#edf2f7 0%,#e2e8f0 100%);border:1px dashed #cbd5e1;display:flex;align-items:center;justify-content:center}.card.empty::before{content:"جاهزة للاستخدام";color:#94a3b8;font-size:12px;font-weight:600;border:1px dashed #cbd5e1;padding:6px 12px;border-radius:4px}@media print{body{background:none}.pages{padding:0;gap:0}.page{box-shadow:none}}';
+const BILL_LOGO='<svg class="logo-svg" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><circle cx="13" cy="13" r="12.5" fill="#0F4C5C" stroke="#C9A227" stroke-width="1.5"/><path d="M13 3C12 4.5 10.5 6.5 10.5 8C10.5 9.38 11.62 10.5 13 10.5S15.5 9.38 15.5 8C15.5 6.5 14 4.5 13 3Z" fill="#C9A227"/><rect x="9.5" y="11" width="7" height="3" rx="0.5" fill="#FAF7F0"/><rect x="7.5" y="14.5" width="11" height="3" rx="0.5" fill="#FAF7F0"/><rect x="5.5" y="18" width="15" height="4.5" rx="0.5" fill="#FAF7F0"/></svg>';
+const BILL_OVERLAY='<div class="cut-overlay"><div class="ch" style="top:33.333%"><span class="sc sc-l">✂</span><span class="sc sc-r">✂</span></div><div class="ch" style="top:66.666%"><span class="sc sc-l">✂</span><span class="sc sc-r">✂</span></div><div class="cv" style="left:33.333%"><span class="sc sc-t">✂</span><span class="sc sc-b">✂</span></div><div class="cv" style="left:66.666%"><span class="sc sc-t">✂</span><span class="sc sc-b">✂</span></div></div>';
+function billDoc(title,pagesHTML,autoprint){
+  const ap=autoprint?'<script>window.onload=function(){setTimeout(function(){window.print()},400)}<\/script>':'';
+  return '<!doctype html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(title)+'</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"><style>'+BILL_CSS+'</style></head><body><div class="pages">'+pagesHTML+'</div>'+ap+'</body></html>';
+}
+function paginateCards(cards){
+  const pages=[];for(let i=0;i<cards.length;i+=9)pages.push(cards.slice(i,i+9));if(!pages.length)pages.push([]);
+  return pages.map(group=>{let cells=group.join("");for(let k=group.length;k<9;k++)cells+='<div class="card empty"></div>';return '<div class="page">'+BILL_OVERLAY+'<div class="grid">'+cells+'</div></div>';}).join("");
+}
+
+/* ===================== PRINTS (unified dropdown) ===================== */
+function curBuilding(){return esc(document.getElementById("prBuilding").value||"عمارة الحجاز");}
+function billRows(periodId){return db.readings.filter(r=>r.periodId===periodId).map(r=>({
+  name:byId(db.people,r.personId)?.name||"",period:byId(db.periods,r.periodId)?.name||"",
+  prev:r.prev,curr:r.curr,diff:consumption(r),price:r.price,total:readingTotal(r),date:r.date
+})).sort((a,b)=>a.name.localeCompare(b.name,"ar"));}
+function genWater(autoprint){
+  const B=curBuilding();
+  const card=b=>'<div class="card"><div class="ch2"><div class="logo-wrap">'+BILL_LOGO+'<span class="logo-name">'+B+'</span></div><div class="inv-title">فاتورة<br>استهلاك مياه</div></div>'+
+    '<div class="body"><p class="tenant">'+esc(b.name)+'</p><p class="period">الفترة: '+esc(b.period)+'</p>'+
+    '<table class="bt">'+
+    '<tr><td class="lbl">القراءة السابقة</td><td class="val">'+fmtN0(b.prev)+'</td></tr>'+
+    '<tr><td class="lbl">القراءة الحالية</td><td class="val">'+fmtN0(b.curr)+'</td></tr>'+
+    '<tr><td class="lbl">الفرق (م³)</td><td class="val">'+fmt3(b.diff)+'</td></tr>'+
+    '<tr><td class="lbl">سعر م³</td><td class="val">'+fmt(b.price)+' ₪</td></tr>'+
+    '<tr class="tr-tot"><td class="lbl">الإجمالي</td><td class="val">'+b.total+' ₪</td></tr>'+
+    '</table></div><div class="foot"><span>'+B+'</span><span>'+fmtDMY(b.date)+'</span></div></div>';
+  const cards=billRows(document.getElementById("prPeriod").value).map(card);
+  return billDoc("فواتير استهلاك مياه",paginateCards(cards),autoprint);
+}
+function genServices(autoprint){
+  const B=curBuilding();
+  const label=esc(document.getElementById("prLabel").value||"خدمات العمارة");
+  const amount=Number(document.getElementById("prServiceAmount").value||0);
+  const dateStr=fmtDMY(today());
+  const people=[...db.people].sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+  const card=p=>'<div class="card"><div class="ch2"><div class="logo-wrap">'+BILL_LOGO+'<span class="logo-name">'+B+'</span></div><div class="inv-title">فاتورة<br>خدمات العمارة</div></div>'+
+    '<div class="body"><p class="tenant">'+esc(p.name)+'</p><p class="period">'+label+'</p>'+
+    '<table class="bt">'+
+    '<tr><td class="lbl">البيان</td><td class="val">خدمات العمارة</td></tr>'+
+    '<tr><td class="lbl">التاريخ</td><td class="val">'+dateStr+'</td></tr>'+
+    '<tr class="tr-tot"><td class="lbl">المبلغ المستحق</td><td class="val">'+fmtN0(amount)+' ₪</td></tr>'+
+    '</table></div><div class="foot"><span>'+B+'</span><span>'+dateStr+'</span></div></div>';
+  return billDoc("فواتير خدمات العمارة",paginateCards(people.map(card)),autoprint);
+}
+function genPayments(autoprint){
+  const B=curBuilding();
+  const label=esc(document.getElementById("prLabel").value||"دفعات مايو 2026");
+  const svc=Number(document.getElementById("prServiceAmount").value||0);
+  const dateStr=fmtDMY(today());
+  const people=[...db.people].sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+  const card=p=>{const water=personPaidWater(p.id);const total=water+svc;
+    return '<div class="card"><div class="ch2"><div class="logo-wrap">'+BILL_LOGO+'<span class="logo-name">'+B+'</span></div><div class="inv-title">سند<br>دفعة / قبض</div></div>'+
+    '<div class="body"><p class="tenant">'+esc(p.name)+'</p><p class="period">'+label+'</p>'+
+    '<table class="bt">'+
+    '<tr><td class="lbl">تحصيلات مياه (مدفوعة)</td><td class="val">'+fmtN0(water)+' ₪</td></tr>'+
+    '<tr><td class="lbl">خدمات العمارة</td><td class="val">'+fmtN0(svc)+' ₪</td></tr>'+
+    '<tr class="tr-tot"><td class="lbl">إجمالي المدفوع</td><td class="val">'+fmtN0(total)+' ₪</td></tr>'+
+    '</table></div><div class="foot"><span>'+B+'</span><span>'+dateStr+'</span></div></div>';};
+  return billDoc("سندات الدفعات",paginateCards(people.map(card)),autoprint);
+}
+function genBalance(autoprint){
+  const B=curBuilding();
+  const dateStr=fmtDMY(today());
+  const people=[...db.people].sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+  const card=p=>{const paid=personPaidWater(p.id);const rem=personOutstanding(p.id);
+    return '<div class="card"><div class="ch2"><div class="logo-wrap">'+BILL_LOGO+'<span class="logo-name">'+B+'</span></div><div class="inv-title">كشف<br>رصيد ساكن</div></div>'+
+    '<div class="body"><p class="tenant">'+esc(p.name)+'</p><p class="period">المتبقي (فترة 19–30 مايو غير مدفوعة)</p>'+
+    '<table class="bt">'+
+    '<tr><td class="lbl">المدفوع (فترات سابقة)</td><td class="val">'+fmtN0(paid)+' ₪</td></tr>'+
+    '<tr class="tr-tot"><td class="lbl">الرصيد المتبقي</td><td class="val">'+fmtN0(rem)+' ₪</td></tr>'+
+    '</table></div><div class="foot"><span>'+B+'</span><span>'+dateStr+'</span></div></div>';};
+  return billDoc("كشف أرصدة السكان",paginateCards(people.map(card)),autoprint);
+}
+function currentPrintHTML(autoprint){const t=document.getElementById("printType").value;
+  if(t==="services")return genServices(autoprint);
+  if(t==="payments")return genPayments(autoprint);
+  if(t==="balance")return genBalance(autoprint);
+  return genWater(autoprint);}
+function onPrintTypeChange(){const t=document.getElementById("printType").value;
+  document.getElementById("prPeriodWrap").style.display=(t==="water")?"":"none";
+  document.getElementById("prServiceWrap").style.display=(t==="services"||t==="payments")?"":"none";
+  document.getElementById("prLabelWrap").style.display=(t==="services"||t==="payments")?"":"none";
+  renderPrintPreview();}
+function renderPrintPreview(){const f=document.getElementById("printFrame");if(!f)return;
+  const hints={water:"فواتير استهلاك المياه — ٩ فواتير لكل صفحة A4 لكل ساكن لديه قراءة في الفترة المختارة، مع خطوط القص.",services:"فواتير خدمات العمارة — ٩ لكل صفحة A4 بمبلغ ثابت لكل ساكن، مع خطوط القص.",payments:"سندات الدفعات — ٩ لكل صفحة، تُظهر تحصيلات المياه (الفترات المدفوعة) + الخدمات لكل ساكن.",balance:"كشف أرصدة السكان — ٩ لكل صفحة، يُظهر المتبقي على كل ساكن (فترة 19–30 مايو غير مدفوعة)."};
+  const h=document.getElementById("prHint");if(h)h.textContent=hints[document.getElementById("printType").value]||"";
+  f.srcdoc=currentPrintHTML(false);}
+function openPrint(){const w=window.open("","_blank");w.document.open();w.document.write(currentPrintHTML(true));w.document.close();}
+
+/* ===================== DROPDOWNS ===================== */
+function fill(el,items,ph,empty){if(!el)return;if(empty===undefined)empty=true;const c=el.value;
+  el.innerHTML=(empty?'<option value="">'+ph+'</option>':"")+items.map(x=>'<option value="'+x.id+'">'+esc(x.name)+'</option>').join("");
+  if(items.some(x=>x.id===c))el.value=c;}
+function dropdowns(){
+  const ppl=[...db.people].sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+  const per=[...db.periods].sort((a,b)=>(b.start||"").localeCompare(a.start||""));
+  const acc=[...db.accounts].sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+  ["qiPerson","inPerson"].forEach(id=>fill(document.getElementById(id),ppl,"— ساكن —"));
+  ["rdPerson","stPerson","rcPerson"].forEach(id=>fill(document.getElementById(id),ppl,"— ساكن —",false));
+  fill(document.getElementById("rdPeriod"),per,"— فترة —",false);
+  ["stPeriod","debtPeriod","rdFilterPeriod"].forEach(id=>fill(document.getElementById(id),per,"كل الفترات"));
+  fill(document.getElementById("prPeriod"),per,"",false);
+  fill(document.getElementById("impPeriod"),per,"",false);
+  ["qiAccount","inAccount","qeAccount","exAccount"].forEach(id=>fill(document.getElementById(id),acc,"— حساب —"));
+  fill(document.getElementById("inFilterPerson"),ppl,"كل السكان");
+  fill(document.getElementById("exFilterAccount"),acc,"كل الحسابات");
+  fill(document.getElementById("accReportAccount"),acc,"كل الحسابات");
+  fill(document.getElementById("blAccount"),acc,"— حساب —");
+  rcFillIncome();
+}
+
+/* ===================== QUICK ===================== */
+function quickIncome(){inPerson.value=qiPerson.value;inAmount.value=qiAmount.value;inCat.value=qiCat.value;inAccount.value=qiAccount.value;inNote.value=qiNote.value;inDate.value=qiDate.value||today();addIncome();qiAmount.value="";qiNote.value="";}
+function quickExpense(){exAmount.value=qeAmount.value;exCat.value=qeCat.value;exAccount.value=qeAccount.value;exNote.value=qeNote.value;exDate.value=qeDate.value||today();addExpense();qeAmount.value="";qeNote.value="";}
+
+/* ===================== EXPORT/RESET JSON ===================== */
+function exportJSON(){const b=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="building-management-backup.json";a.click();URL.revokeObjectURL(a.href);}
+function importJSON(){const i=document.createElement("input");i.type="file";i.accept="application/json";i.onchange=async()=>{const f=i.files[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!o.people||!o.accounts)throw 0;db=o;save(db);refresh();alert("تم الاستيراد");}catch(e){alert("ملف غير صالح");}};i.click();}
+function resetSeed(){if(!confirm("استعادة بيانات النظام الأصلية؟ سيُستبدل ما أدخلته."))return;db=buildSeed();save(db);refresh();}
+
+/* ===================== REFRESH ===================== */
+function refresh(){
+  ["inDate","exDate","rdDate","qiDate","qeDate"].forEach(id=>{const e=document.getElementById(id);if(e&&!e.value)e.value=today();});
+  dropdowns();renderKPIs();renderPeople();renderPeriods();renderServices();renderReadings();renderIncome();renderExpenses();renderAccounts();renderDebts();renderStatement();renderReceipt();renderBills();renderMonthlyPreview();
+}
+refresh();
+</script>
+</body>
+</html>
