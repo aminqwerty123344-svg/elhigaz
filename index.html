@@ -192,6 +192,8 @@
       inRange.sort(function(a,b){ var pa=byId(db.periods,a.periodId),pb=byId(db.periods,b.periodId); return ((pa?pa.start:"")||"").localeCompare((pb?pb.start:"")||""); });
       var waterDueRange=inRange.reduce(function(s,r){return s+readingDue(r);},0);
       var waterDueAll=personDue(pid);
+      var waterPaid=db.incomes.filter(function(x){return x.personId===pid&&x.category==="تحصيلات ماء";}).reduce(function(s,x){return s+Number(x.amount||0);},0);
+      var waterUnpaid=waterDueAll-waterPaid; if(waterUnpaid<0)waterUnpaid=0;
       var svcDue=personServicesDue(pid), oldDebt=personOldDebt(pid);
       var totalDue=waterDueAll+svcDue+oldDebt;
       var totalPaid=personPaid(pid);
@@ -211,7 +213,7 @@
         +'<div><div style="font-size:18px;font-weight:800;color:var(--accent)">كشف حساب — '+esc(person?person.name:"")+'</div>'
         +'<div class="muted" style="font-size:12px">النطاق: '+esc(fromP?fromP.name:"—")+' ← '+esc(toP?toP.name:"—")+'</div></div>'
         +'<div class="muted" style="font-size:12px">تاريخ الإصدار: '+fmtDMY(today())+'</div></div>'
-        +'<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px"><button class="btn sm solid" onclick="hgPayOpen(\''+pid+'\',\'تحصيلات ماء\','+(waterDueAll>0?waterDueAll:0)+')">+ دفع مياه</button><button class="btn sm solid" onclick="hgPayOpen(\''+pid+'\',\'خدمات\','+(svcDue>0?svcDue:0)+')">+ دفع خدمات</button><button class="btn sm" onclick="hgPayOpen(\''+pid+'\',\'تسديد ديون سابق\','+(oldDebt>0?oldDebt:0)+')">+ تسديد دين سابق</button></div>'
+        +'<div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px"><button class="btn sm solid" onclick="hgPayOpen(\''+pid+'\',\'تحصيلات ماء\','+(waterUnpaid>0?waterUnpaid:0)+')">+ دفع مياه</button><button class="btn sm solid" onclick="hgPayOpen(\''+pid+'\',\'خدمات\','+(svcDue>0?svcDue:0)+')">+ دفع خدمات</button><button class="btn sm" onclick="hgPayOpen(\''+pid+'\',\'تسديد ديون سابق\','+(oldDebt>0?oldDebt:0)+')">+ تسديد دين سابق</button></div>'
         +'<div class="sectionTitle">استهلاك المياه ضمن النطاق</div>'
         +'<div class="tableWrap"><table class="bare"><thead><tr><th>الفترة / التعبئة</th><th>التاريخ</th><th class="num">م³</th><th class="num">السعر</th><th class="num">المستحق</th><th class="noprint"></th></tr></thead><tbody>'+rowsHtml
         +'</tbody><tfoot><tr><th colspan="4">إجمالي مستحق المياه ضمن النطاق</th><th class="num">'+fmt(waterDueRange)+'</th><th class="noprint"></th></tr></tfoot></table></div>'
@@ -456,7 +458,9 @@
       <div class="noprint btnRow" style="margin-top:4px">
         <button class="btn" onclick="exportJSON()">تصدير نسخة</button>
         <button class="btn" onclick="importJSON()">استيراد</button>
+        <button class="btn" onclick="hgChangePassword()">تغيير كلمة السر</button>
         <button class="btn link" onclick="resetSeed()">استعادة بيانات النظام</button>
+        <button class="btn link" onclick="hgLockNow()">🔒 قفل</button>
       </div>
     </div>
     <nav class="noprint" id="mainNav">
@@ -838,6 +842,51 @@
   </section>
 
 </main>
+
+<!-- System password lock -->
+<script>
+/* ===== قفل النظام بكلمة سر ===== */
+(function(){
+  var KEY="hg_app_pass", SESS="hg_app_unlocked";
+  function getPass(){ try{return localStorage.getItem(KEY);}catch(e){return null;} }
+  function setPass(p){ try{localStorage.setItem(KEY,p);}catch(e){} }
+  function isUnlocked(){ try{return sessionStorage.getItem(SESS)==="1";}catch(e){return false;} }
+  function hideLock(){ var ov=document.getElementById("hgLock"); if(ov&&ov.parentNode)ov.parentNode.removeChild(ov); }
+  function unlock(){ try{sessionStorage.setItem(SESS,"1");}catch(e){} hideLock(); }
+  function buildLock(){
+    if(document.getElementById("hgLock"))return;
+    var first=!getPass();
+    var ov=document.createElement("div"); ov.id="hgLock";
+    ov.style.cssText="position:fixed;inset:0;z-index:99999;background:linear-gradient(180deg,#0F4C5C,#1B3A57);display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Kufi Arabic',Tahoma,Arial,sans-serif";
+    ov.innerHTML='<div style="background:#fff;border-radius:12px;padding:28px;width:min(360px,92vw);box-shadow:0 16px 60px rgba(0,0,0,.35);text-align:center"><div style="font-size:34px">🔒</div><div style="font-size:18px;font-weight:800;color:#0F4C5C;margin:6px 0 2px">نظام إدارة عمارة الحجاز</div><div style="font-size:13px;color:#787774;margin-bottom:16px">'+(first?"أنشئ كلمة سر للدخول لأول مرة":"أدخل كلمة السر للدخول")+'</div><input id="hgLockPass" type="password" placeholder="كلمة السر" style="width:100%;padding:10px;border:1px solid #d3d1cb;border-radius:6px;font-size:14px;text-align:center;box-sizing:border-box"/>'+(first?'<input id="hgLockPass2" type="password" placeholder="تأكيد كلمة السر" style="width:100%;padding:10px;border:1px solid #d3d1cb;border-radius:6px;font-size:14px;text-align:center;box-sizing:border-box;margin-top:8px"/>':'')+'<div id="hgLockErr" style="color:#a8332a;font-size:12px;min-height:16px;margin:8px 0"></div><button id="hgLockBtn" style="width:100%;padding:10px;border:none;border-radius:6px;background:#0F4C5C;color:#fff;font-size:14px;font-weight:700;cursor:pointer">'+(first?"حفظ ودخول":"دخول")+'</button></div>';
+    document.body.appendChild(ov);
+    var pass=document.getElementById("hgLockPass"), btn=document.getElementById("hgLockBtn"), err=document.getElementById("hgLockErr");
+    function submit(){
+      var v=pass.value||"";
+      if(first){
+        var v2=(document.getElementById("hgLockPass2")||{}).value||"";
+        if(v.length<3){err.textContent="كلمة السر قصيرة (3 أحرف على الأقل)";return;}
+        if(v!==v2){err.textContent="كلمتا السر غير متطابقتين";return;}
+        setPass(v); unlock();
+      } else if(v===getPass()){ unlock(); }
+      else { err.textContent="كلمة السر غير صحيحة"; pass.value=""; pass.focus(); }
+    }
+    btn.onclick=submit;
+    ov.addEventListener("keydown",function(e){ if(e.key==="Enter")submit(); });
+    setTimeout(function(){try{pass.focus();}catch(e){}},100);
+  }
+  function gate(){ if(isUnlocked())hideLock(); else buildLock(); }
+  window.hgChangePassword=function(){
+    var cur=getPass();
+    if(cur){ var c=prompt("أدخل كلمة السر الحالية:"); if(c===null)return; if(c!==cur){alert("كلمة السر الحالية غير صحيحة");return;} }
+    var n=prompt("أدخل كلمة السر الجديدة:"); if(n===null)return; if((n||"").length<3){alert("كلمة السر قصيرة (3 أحرف على الأقل)");return;}
+    var n2=prompt("أكّد كلمة السر الجديدة:"); if(n2===null)return; if(n!==n2){alert("كلمتا السر غير متطابقتين");return;}
+    setPass(n); alert("تم تغيير كلمة السر بنجاح");
+  };
+  window.hgLockNow=function(){ try{sessionStorage.removeItem(SESS);}catch(e){} buildLock(); };
+  if(document.readyState==="loading"){ document.addEventListener("DOMContentLoaded",gate); } else { gate(); }
+})();
+</script>
 
 <!-- Quick-pay modal -->
 <div id="payModal" class="modalOverlay">
