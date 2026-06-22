@@ -84,6 +84,8 @@
   @media print{ header,.noprint{display:none !important;} main{padding:0;} .card{border:none;padding:0;} tr:hover td{background:transparent;} }
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js"></script>
 <script>
 /* ===== PATCH v6 — تحسينات نظام إدارة المبنى (كشف الحساب/التصنيفات/السندات/الإعفاء/كشف الحسابات) ===== */
 (function(){
@@ -448,6 +450,9 @@
 </script>
 </head>
 <body>
+<div style="position: fixed; bottom: 10px; right: 10px; background: white; padding: 8px 12px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-size: 12px; z-index: 100; color: #2f7a2f; font-weight: 500;">
+  <span id="syncStatus">☁️ Synced</span>
+</div>
 <header>
   <div class="wrap head">
     <div class="topbar">
@@ -842,6 +847,18 @@
   </section>
 
 </main>
+
+<!-- Firebase cloud sync -->
+<script src="firebase-sync.js"></script>
+<script>
+  // Initialize Firebase and Cloud Sync
+  window.addEventListener('load', function() {
+    window.initFirebase();
+    window.initCloudSync('Desktop'); // Change 'Desktop' to your device name
+    window.hookCloudSync();
+    console.log('✅ Cloud sync ready!');
+  });
+</script>
 
 <!-- System password lock -->
 <script>
